@@ -1,34 +1,17 @@
 plugins {
-    alias(libs.plugins.kotlin.jvm) apply false
-    `git-versioning`
+    base
 }
 
-allprojects {
+val pluginBuild = gradle.includedBuild("plugin")
 
-    group = "io.github.gmazzo.docker"
+tasks.check {
+    dependsOn(pluginBuild.task(":check"))
+}
 
-    plugins.withId("java") {
+tasks.build {
+    dependsOn(pluginBuild.task(":build"))
+}
 
-        apply(plugin = "jacoco-report-aggregation")
-
-        dependencies {
-            "testImplementation"(libs.kotlin.test)
-            "testImplementation"("org.junit.jupiter:junit-jupiter-params")
-        }
-
-        tasks.withType<Test>().configureEach {
-            useJUnitPlatform()
-            workingDir(provider { temporaryDir })
-        }
-
-        tasks.withType<JacocoReport>().configureEach {
-            reports.xml.required.set(true)
-        }
-
-        tasks.named("check") {
-            dependsOn(tasks.withType<JacocoReport>())
-        }
-
-    }
-
+tasks.register("publish") {
+    dependsOn(pluginBuild.task(":publish"))
 }
