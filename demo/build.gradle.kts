@@ -1,4 +1,4 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
-    id("")
+    id("io.github.gmazzo.docker")
 }

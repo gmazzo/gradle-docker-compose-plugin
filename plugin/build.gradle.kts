@@ -8,8 +8,10 @@ plugins {
     alias(libs.plugins.kotlin.samWithReceiver)
     alias(libs.plugins.gradle.pluginPublish)
     `java-integration-tests`
+    `git-versioning`
 }
 
+group = "io.github.gmazzo.docker"
 description = "Docker Gradle Plugin"
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(8))
@@ -20,6 +22,7 @@ dependencies {
     compileOnly(gradleKotlinDsl())
 
     testImplementation(gradleKotlinDsl())
+    testImplementation(libs.kotlin.test)
 }
 
 gradlePlugin {
@@ -49,6 +52,11 @@ tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
         freeCompilerArgs = freeCompilerArgs + "-Xjvm-default=all-compatibility"
     }
+}
+
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
+    workingDir(provider { temporaryDir })
 }
 
 tasks.integrationTest {
