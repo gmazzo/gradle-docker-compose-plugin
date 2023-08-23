@@ -19,6 +19,8 @@ abstract class DockerComposeSpec : Named {
 
     abstract val exclusive: Property<Boolean>
 
+    abstract val printLogs: Property<Boolean>
+
     lateinit var service: Provider<DockerComposeService>
         internal set
 
