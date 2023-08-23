@@ -5,7 +5,6 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.jvm.JvmTestSuite
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.kotlin.dsl.apply
-import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.the
 import org.gradle.kotlin.dsl.withType
@@ -33,11 +32,11 @@ class DockerComposePlugin : Plugin<Project> {
         the<TestingExtension>().suites.withType<JvmTestSuite>().configureEach suite@{
             targets.configureEach {
                 testTask.configure {
-                    val service = extension.services[this@suite.name]
+                    val service = extension.services.maybeCreate(this@suite.name)
 
-                    if (!service.composeFile.asFileTree.isEmpty) {
-                        usesService(service.service)
-                    }
+                    usesService(service.service)
+
+                    doFirst { systemProperties.putAll(service.service.get().containersPortsAsSystemProperties) }
                 }
             }
         }
