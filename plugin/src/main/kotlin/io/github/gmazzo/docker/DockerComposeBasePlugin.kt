@@ -8,9 +8,10 @@ import org.gradle.kotlin.dsl.registerIfAbsent
 class DockerComposeBasePlugin : Plugin<Project> {
 
     override fun apply(target: Project): Unit = with(target) {
+        //objects.namedDomainObjectSet(Provider::class)
         val extension: DockerComposeExtension = extensions.create("dockerCompose")
 
-        extension.specs.all spec@{
+        extension.services.all spec@{
             command.convention("docker-compose").finalizeValueOnRead()
             commandExtraArgs.finalizeValueOnRead()
             composeFile.finalizeValueOnRead()
