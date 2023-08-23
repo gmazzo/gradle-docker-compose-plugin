@@ -22,7 +22,7 @@ class DockerComposePlugin : Plugin<Project> {
         the<SourceSetContainer>().configureEach ss@{
             val sourceSetDir = layout.projectDirectory.dir("src/${this@ss.name}")
 
-            extension.specs.maybeCreate(this@ss.name).composeFile.from(
+            extension.services.maybeCreate(this@ss.name).composeFile.from(
                 sourceSetDir.file("docker-compose.yml"),
                 sourceSetDir.file("docker-compose.yaml"),
                 sourceSetDir.file("docker-compose.json"),
@@ -33,8 +33,10 @@ class DockerComposePlugin : Plugin<Project> {
         the<TestingExtension>().suites.withType<JvmTestSuite>().configureEach suite@{
             targets.configureEach {
                 testTask.configure {
-                    if (!extension.specs[this@suite.name].composeFile.asFileTree.isEmpty) {
-                        usesService(extension.service(this@suite.name))
+                    val service = extension.services[this@suite.name]
+
+                    if (!service.composeFile.asFileTree.isEmpty) {
+                        usesService(service.service)
                     }
                 }
             }
