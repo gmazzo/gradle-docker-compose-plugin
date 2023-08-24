@@ -10,13 +10,19 @@ class DockerComposeBasePlugin : Plugin<Project> {
     override fun apply(target: Project): Unit = with(target) {
         val extension: DockerComposeExtension = extensions.create("dockerCompose")
 
-        extension.services.all spec@{
+        with(extension) {
             command.convention("docker-compose").finalizeValueOnRead()
-            commandExtraArgs.finalizeValueOnRead()
-            composeFile.finalizeValueOnRead()
             workingDirectory.convention(layout.projectDirectory).finalizeValueOnRead()
-            exclusive.convention(true).finalizeValueOnRead()
             printLogs.convention(true).finalizeValueOnRead()
+        }
+
+        extension.services.all spec@{
+            command.convention(extension.command).finalizeValueOnRead()
+            commandExtraArgs.convention(extension.commandExtraArgs).finalizeValueOnRead()
+            composeFile.finalizeValueOnRead()
+            workingDirectory.convention(extension.workingDirectory).finalizeValueOnRead()
+            exclusive.convention(true).finalizeValueOnRead()
+            printLogs.convention(extension.printLogs).finalizeValueOnRead()
 
             service = gradle.sharedServices.registerIfAbsent(name, DockerComposeService::class) param@{
                 parameters {
