@@ -3,9 +3,7 @@ package io.github.gmazzo.docker
 import io.github.gmazzo.docker.data.DockerContainerInfo
 import kotlinx.serialization.json.Json
 import org.gradle.api.file.ConfigurableFileCollection
-import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileCollection
-import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
@@ -91,19 +89,11 @@ abstract class DockerComposeService @Inject constructor(
         }
     }
 
-    interface Params : BuildServiceParameters {
+    interface Params : BuildServiceParameters, DockerComposeSettings {
 
         val name: Property<String>
 
-        val command: Property<String>
-
-        val commandExtraArgs: ListProperty<String>
-
         val composeFile: ConfigurableFileCollection
-
-        val workingDirectory: DirectoryProperty
-
-        val printLogs: Property<Boolean>
 
     }
 
