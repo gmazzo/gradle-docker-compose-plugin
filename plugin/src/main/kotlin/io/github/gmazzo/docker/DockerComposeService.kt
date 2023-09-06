@@ -54,12 +54,12 @@ abstract class DockerComposeService @Inject constructor(
             if (composeFile == null) return emptyList()
 
             val json = ByteArrayOutputStream()
-            runCommand("ps", "--format=json", output = PrintStream(json))
+            runCommand("config", "--format=json", output = PrintStream(json))
             return Json.decodeFromString(json.toString(StandardCharsets.UTF_8))
         }
 
-    val containersPortsAsSystemProperties
-        get(): Map<String, String> = buildMap {
+    val containersPortsAsSystemProperties: Map<String, String>
+        get() = buildMap {
             containersInfo.forEach {
                 it.publishers.forEach { p ->
                     put("container.${it.name}.${p.protocol}${p.targetPort}", "${p.url}:${p.publishedPort}")

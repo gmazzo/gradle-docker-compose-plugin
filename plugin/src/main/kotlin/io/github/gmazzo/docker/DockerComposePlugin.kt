@@ -3,6 +3,7 @@ package io.github.gmazzo.docker
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.jvm.JvmTestSuite
+import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.getByType
@@ -35,6 +36,9 @@ class DockerComposePlugin : Plugin<Project> {
                     val service = extension.services.maybeCreate(this@suite.name)
 
                     usesService(service.service)
+                    inputs.files(service.composeFile)
+                        .withPathSensitivity(PathSensitivity.NONE)
+                        .optional()
 
                     doFirst { systemProperties.putAll(service.service.get().containersPortsAsSystemProperties) }
                 }
