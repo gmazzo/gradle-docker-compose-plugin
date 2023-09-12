@@ -1,10 +1,10 @@
-package io.github.gmazzo.docker.data
+package io.github.gmazzo.docker
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class DockerContainerInfo(
+data class DockerContainer(
     @SerialName("Command") val command: String,
     @SerialName("Created") val created: Long,
     @SerialName("ExitCode") val exitCode: Int,
@@ -13,7 +13,7 @@ data class DockerContainerInfo(
     @SerialName("Image") val image: String,
     @SerialName("Name") val name: String,
     @SerialName("Project") val project: String,
-    @SerialName("Publishers") val publishers: List<Publisher>,
+    @SerialName("Publishers") val publishers: List<Publisher> = emptyList(),
     @SerialName("Service") val service: String,
     @SerialName("State") val state: String,
     @SerialName("Status") val status: String,

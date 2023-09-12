@@ -2,47 +2,29 @@ package io.github.gmazzo.docker
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.plugins.jvm.JvmTestSuite
-import org.gradle.api.tasks.PathSensitivity
-import org.gradle.api.tasks.SourceSetContainer
-import org.gradle.kotlin.dsl.apply
-import org.gradle.kotlin.dsl.getByType
-import org.gradle.kotlin.dsl.the
-import org.gradle.kotlin.dsl.withType
-import org.gradle.testing.base.TestingExtension
+import org.gradle.kotlin.dsl.create
 
 class DockerComposePlugin : Plugin<Project> {
 
     override fun apply(target: Project): Unit = with(target) {
-        apply<DockerComposeBasePlugin>()
-        apply(plugin = "jvm-test-suite")
+        val extension: DockerComposeExtension = extensions.create("dockerCompose")
 
-        val extension: DockerComposeExtension = extensions.getByType()
-
-        the<SourceSetContainer>().configureEach ss@{
-            val sourceSetDir = layout.projectDirectory.dir("src/${this@ss.name}")
-
-            extension.services.maybeCreate(this@ss.name).composeFile.from(
-                sourceSetDir.file("docker-compose.yml"),
-                sourceSetDir.file("docker-compose.yaml"),
-                sourceSetDir.file("docker-compose.json"),
-            )
+        with(extension) {
+            command.convention("docker-compose").finalizeValueOnRead()
+            workingDirectory.convention(layout.projectDirectory).finalizeValueOnRead()
+            printLogs.convention(true).finalizeValueOnRead()
         }
 
-        @Suppress("UnstableApiUsage")
-        the<TestingExtension>().suites.withType<JvmTestSuite>().configureEach suite@{
-            targets.configureEach {
-                testTask.configure {
-                    val service = extension.services.maybeCreate(this@suite.name)
-
-                    usesService(service.service)
-                    inputs.files(service.composeFile)
-                        .withPathSensitivity(PathSensitivity.NONE)
-                        .optional()
-
-                    doFirst { systemProperties.putAll(service.service.get().containersPortsAsSystemProperties) }
-                }
-            }
+        extension.services.all spec@{
+            command.convention(extension.command).finalizeValueOnRead()
+            commandExtraArgs.convention(extension.commandExtraArgs).finalizeValueOnRead()
+            composeFile
+                .from(layout.projectDirectory.dir("src/$name").asFileTree.matching {
+                    include("docker-compose.{yml,yaml,json}")
+                })
+                .finalizeValueOnRead()
+            workingDirectory.convention(extension.workingDirectory).finalizeValueOnRead()
+            printLogs.convention(extension.printLogs).finalizeValueOnRead()
         }
     }
 

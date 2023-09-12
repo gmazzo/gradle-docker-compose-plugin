@@ -34,15 +34,15 @@ gradlePlugin {
         id = "io.github.gmazzo.docker"
         displayName = name
         implementationClass = "io.github.gmazzo.docker.DockerComposePlugin"
-        description = "Spawns Docker Compose environments for Test tasks as a Gradle's Shared Build Service"
+        description = "Spawns Docker Compose environments for tasks as a Gradle's Shared Build Service"
         tags.addAll("docker", "docker-compose", "build-service", "shared-build-service")
     }
 
-    plugins.create("dockerBase") {
-        id = "io.github.gmazzo.docker-base"
+    plugins.create("dockerJVMTests") {
+        id = "io.github.gmazzo.docker.jvm-tests"
         displayName = name
-        implementationClass = "io.github.gmazzo.docker.DockerComposeBasePlugin"
-        description = "Spawns Docker Compose environments for tasks as a Gradle's Shared Build Service"
+        implementationClass = "io.github.gmazzo.docker.DockerComposeJVMTestsPlugin"
+        description = "Spawns Docker Compose environments for Test suites as a Gradle's Shared Build Service"
         tags.addAll("docker", "docker-compose", "build-service", "shared-build-service")
     }
 }

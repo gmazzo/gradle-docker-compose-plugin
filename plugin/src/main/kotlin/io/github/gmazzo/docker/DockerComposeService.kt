@@ -1,9 +1,6 @@
 package io.github.gmazzo.docker
 
-import io.github.gmazzo.docker.data.DockerContainerInfo
 import kotlinx.serialization.json.Json
-import org.gradle.api.file.ConfigurableFileCollection
-import org.gradle.api.file.FileCollection
 import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
@@ -22,64 +19,12 @@ abstract class DockerComposeService @Inject constructor(
 
     private val name = parameters.name.get()
 
-    private val composeFile
-        get() = parameters.composeFile.singleFileOrThrowList()
-
-    init {
-        run()
+    private val json = Json {
+        ignoreUnknownKeys = true
+        coerceInputValues = true
     }
 
-    override fun run() {
-        if (composeFile != null) {
-            println("Starting containers of Docker service `$name`...")
-            runCommand("up", "--wait")
-
-            if (parameters.printLogs.get()) {
-                thread(isDaemon = true, name = "DockerCompose log for service `$name`") {
-                    runCommand("logs", "--follow")
-                }
-            }
-        }
-    }
-
-    override fun close() {
-        if (composeFile != null) {
-            println("Stopping containers of Docker service `$name`...")
-            runCommand("down")
-        }
-    }
-
-    val containersInfo: List<DockerContainerInfo>
-        get() {
-            if (composeFile == null) return emptyList()
-
-            val json = ByteArrayOutputStream()
-            runCommand("config", "--format=json", output = PrintStream(json))
-            return Json.decodeFromString(json.toString(StandardCharsets.UTF_8))
-        }
-
-    val containersPortsAsSystemProperties: Map<String, String>
-        get() = buildMap {
-            containersInfo.forEach {
-                it.publishers.forEach { p ->
-                    put("container.${it.name}.${p.protocol}${p.targetPort}", "${p.url}:${p.publishedPort}")
-                }
-            }
-        }
-
-    private fun runCommand(vararg commands: String, output: PrintStream = System.out) = execOperations.exec {
-        workingDir = parameters.workingDirectory.get().asFile
-        commandLine = buildList {
-            add(parameters.command.get())
-            addAll(parameters.commandExtraArgs.get())
-            add("-f")
-            add(composeFile!!.absolutePath)
-            addAll(commands)
-        }
-        standardOutput = output
-    }
-
-    private fun FileCollection.singleFileOrThrowList(): File? = with(asFileTree) {
+    private val composeFile: File? = with(parameters.composeFile.asFileTree) {
         if (isEmpty) return@with null
         try {
             return@with singleFile
@@ -89,11 +34,65 @@ abstract class DockerComposeService @Inject constructor(
         }
     }
 
+    init {
+        run()
+    }
+
+    val containers: List<DockerContainer>
+        get() = composeFile?.let { file ->
+            val content = ByteArrayOutputStream()
+            dockerCompose(file, "ps", "--format=json", output = PrintStream(content))
+            return json.decodeFromString(content.toString(StandardCharsets.UTF_8))
+        } ?: emptyList()
+
+    val containersAsSystemProperties: Map<String, String>
+        get() = buildMap {
+            containers.forEach {
+                it.publishers.forEach { p ->
+                    put("container.${it.name}.${p.protocol}${p.targetPort}", "${p.url}:${p.publishedPort}")
+                }
+            }
+        }
+
+    override fun run() {
+        composeFile?.let { file ->
+            println("Starting containers of Docker service `$name`...")
+            dockerCompose(file, "up", "--remove-orphans", "--wait")
+
+            if (parameters.printLogs.get()) {
+                thread(isDaemon = true, name = "DockerCompose log for service `$name`") {
+                    dockerCompose(file, "logs", "--follow")
+                }
+            }
+        }
+    }
+
+    override fun close() {
+        composeFile?.let { file ->
+            println("Stopping containers of Docker service `$name`...")
+            dockerCompose(file, "down")
+        }
+    }
+
+    private fun dockerCompose(
+        composeFile: File,
+        vararg commands: String,
+        output: PrintStream = System.out,
+    ) = execOperations.exec {
+        workingDir = parameters.workingDirectory.get().asFile
+        commandLine = buildList {
+            add(parameters.command.get())
+            addAll(parameters.commandExtraArgs.get())
+            add("-f")
+            add(composeFile.absolutePath)
+            addAll(commands)
+        }
+        standardOutput = output
+    }
+
     interface Params : BuildServiceParameters, DockerComposeSettings {
 
         val name: Property<String>
-
-        val composeFile: ConfigurableFileCollection
 
     }
 
