@@ -9,7 +9,7 @@ import org.gradle.kotlin.dsl.the
 import org.gradle.kotlin.dsl.withType
 import org.gradle.testing.base.TestingExtension
 
-class DockerComposeJVMTestsPlugin : Plugin<Project> {
+class DockerComposePlugin : Plugin<Project> {
 
     override fun apply(target: Project): Unit = with(target) {
         apply(plugin = "jvm-test-suite")

@@ -15,7 +15,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class DockerComposeJVMTestSuitePluginTest {
+class DockerComposePluginTest {
 
     private val project by lazy {
         ProjectBuilder.builder()
@@ -23,7 +23,7 @@ class DockerComposeJVMTestSuitePluginTest {
             .build()
             .also {
                 it.apply(plugin = "java")
-                it.apply<DockerComposeJVMTestsPlugin>()
+                it.apply<DockerComposePlugin>()
 
                 @Suppress("UnstableApiUsage")
                 it.the<TestingExtension>().suites.register<JvmTestSuite>("integrationTest")

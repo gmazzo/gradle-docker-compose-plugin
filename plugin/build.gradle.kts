@@ -41,7 +41,7 @@ gradlePlugin {
     plugins.create("dockerJVMTests") {
         id = "io.github.gmazzo.docker"
         displayName = name
-        implementationClass = "io.github.gmazzo.docker.DockerComposeJVMTestsPlugin"
+        implementationClass = "io.github.gmazzo.docker.DockerComposePlugin"
         description = "Spawns Docker Compose environments for Test suites as a Gradle's Shared Build Service"
         tags.addAll("docker", "docker-compose", "build-service", "shared-build-service")
     }
