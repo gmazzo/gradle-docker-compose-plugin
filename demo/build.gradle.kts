@@ -1,10 +1,15 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     id("io.github.gmazzo.docker")
-    `jvm-test-suite`
+    application
+    alias(libs.plugins.spring.boot)
 }
 
-java.toolchain.languageVersion.set(JavaLanguageVersion.of(libs.versions.java.get().toInt()))
+java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+
+dependencies {
+    implementation(libs.spring.starter.web)
+}
 
 testing.suites {
     withType<JvmTestSuite> {

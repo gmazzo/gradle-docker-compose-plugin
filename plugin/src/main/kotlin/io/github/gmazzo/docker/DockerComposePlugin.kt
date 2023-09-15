@@ -2,7 +2,10 @@ package io.github.gmazzo.docker
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.ApplicationPlugin
 import org.gradle.api.plugins.jvm.JvmTestSuite
+import org.gradle.api.tasks.SourceSet
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.the
@@ -12,25 +15,30 @@ import org.gradle.testing.base.TestingExtension
 class DockerComposePlugin : Plugin<Project> {
 
     override fun apply(target: Project): Unit = with(target) {
-        apply(plugin = "jvm-test-suite")
         apply<DockerComposeBasePlugin>()
 
         val extension: DockerComposeExtension = extensions.getByType()
 
-        @Suppress("UnstableApiUsage")
-        the<TestingExtension>().suites.withType<JvmTestSuite> suite@{
-            val name = this@suite.name
-            val sourceSetDir = layout.projectDirectory.dir("src/$name")
+        fun TaskProvider<*>.bindToSourceSet(sourceSet: String) = configure task@{
+            extension.services.maybeCreate(sourceSet).bindTo(this@task)
+        }
 
-            extension.services.maybeCreate(name).composeFile.from(
-                sourceSetDir.file("docker-compose.yml"),
-                sourceSetDir.file("docker-compose.yaml"),
-                sourceSetDir.file("docker-compose.json"),
-            )
+        plugins.withId("application") {
+            tasks.named(ApplicationPlugin.TASK_RUN_NAME).bindToSourceSet(SourceSet.MAIN_SOURCE_SET_NAME)
+        }
 
-            targets.configureEach {
-                extension.services.maybeCreate(name).bindTo(testTask)
+        plugins.withId("jvm-test-suite") {
+            @Suppress("UnstableApiUsage")
+            the<TestingExtension>().suites.withType<JvmTestSuite> suite@{
+                targets.configureEach {
+                    testTask.bindToSourceSet(this@suite.name)
+                }
             }
+        }
+
+        plugins.withId("org.springframework.boot") {
+            tasks.named("bootRun").bindToSourceSet(SourceSet.MAIN_SOURCE_SET_NAME)
+            runCatching { tasks.named("bootTestRun").bindToSourceSet(SourceSet.TEST_SOURCE_SET_NAME) }
         }
     }
 

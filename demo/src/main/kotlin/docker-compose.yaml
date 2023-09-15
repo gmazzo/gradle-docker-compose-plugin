@@ -1,0 +1,5 @@
+services:
+  app:
+    image: yeasy/simple-web
+    ports:
+      - 1-65535:80
