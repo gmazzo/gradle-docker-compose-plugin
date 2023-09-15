@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
-    id("io.github.gmazzo.docker.jvm-tests")
+    id("io.github.gmazzo.docker")
     `jvm-test-suite`
 }
 

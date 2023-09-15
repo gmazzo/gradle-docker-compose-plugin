@@ -4,7 +4,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.create
 
-class DockerComposePlugin : Plugin<Project> {
+class DockerComposeBasePlugin : Plugin<Project> {
 
     override fun apply(target: Project): Unit = with(target) {
         val extension: DockerComposeExtension = extensions.create("dockerCompose")

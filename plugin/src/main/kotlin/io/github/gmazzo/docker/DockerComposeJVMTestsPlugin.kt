@@ -13,7 +13,7 @@ class DockerComposeJVMTestsPlugin : Plugin<Project> {
 
     override fun apply(target: Project): Unit = with(target) {
         apply(plugin = "jvm-test-suite")
-        apply<DockerComposePlugin>()
+        apply<DockerComposeBasePlugin>()
 
         val extension: DockerComposeExtension = extensions.getByType()
 
