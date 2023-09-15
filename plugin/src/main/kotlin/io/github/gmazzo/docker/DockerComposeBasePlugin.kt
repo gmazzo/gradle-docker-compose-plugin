@@ -20,7 +20,9 @@ class DockerComposeBasePlugin : Plugin<Project> {
             commandExtraArgs.convention(extension.commandExtraArgs).finalizeValueOnRead()
             composeFile
                 .from(layout.projectDirectory.dir("src/$name").asFileTree.matching {
-                    include("docker-compose.{yml,yaml,json}")
+                    include("docker-compose.yml")
+                    include("docker-compose.yaml")
+                    include("docker-compose.json")
                 })
                 .finalizeValueOnRead()
             workingDirectory.convention(extension.workingDirectory).finalizeValueOnRead()
