@@ -13,6 +13,9 @@ class DockerComposeBasePlugin : Plugin<Project> {
         val extension: DockerComposeExtension = extensions.create("dockerCompose")
 
         with(extension) {
+            projectName.convention(
+                if (rootProject == project) rootProject.name.dockerName
+                else "${rootProject.name.dockerName}-${project.name.dockerName}")
             command.convention("docker-compose").finalizeValueOnRead()
             workingDirectory.convention(layout.projectDirectory).finalizeValueOnRead()
             printLogs.convention(true).finalizeValueOnRead()
@@ -21,6 +24,7 @@ class DockerComposeBasePlugin : Plugin<Project> {
         extension.services.all spec@{
             val baseDir = layout.projectDirectory.dir("src/$name")
 
+            projectName.convention(extension.projectName.map { "${it}_${name.dockerName}" })
             command.convention(extension.command).finalizeValueOnRead()
             commandExtraArgs.convention(extension.commandExtraArgs).finalizeValueOnRead()
             composeFile
@@ -36,7 +40,7 @@ class DockerComposeBasePlugin : Plugin<Project> {
             tasks.register<DockerComposeInitTask>("init${if (name == SourceSet.MAIN_SOURCE_SET_NAME) "" else name.capitalized()}Containers") {
                 group = "Docker"
                 description = "Creates (but does not start) the containers of '$name' source set"
-                this@spec.copyTo(this)
+                copyFrom(this@spec)
             }
         }
     }

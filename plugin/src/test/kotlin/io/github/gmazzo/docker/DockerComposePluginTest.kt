@@ -66,7 +66,7 @@ class DockerComposePluginTest {
             assertEquals(emptyMap(), test.buildService.get().containersAsSystemProperties)
             assertEquals(
                 mapOf(
-                    "container.integrationtest-app-1.tcp80" to "127.0.0.1:8080",
+                    "container.integrationTest-app-1.tcp80" to "127.0.0.1:8080",
                 ), integrationTest.buildService.get().containersAsSystemProperties
             )
 

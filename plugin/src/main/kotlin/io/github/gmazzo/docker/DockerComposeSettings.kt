@@ -7,6 +7,8 @@ import org.gradle.api.provider.Property
 
 interface DockerComposeSettings {
 
+    val projectName: Property<String>
+
     val command: Property<String>
 
     val commandExtraArgs: ListProperty<String>

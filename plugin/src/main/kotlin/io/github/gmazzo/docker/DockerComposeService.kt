@@ -39,8 +39,10 @@ abstract class DockerComposeService @Inject constructor(
     val containersAsSystemProperties: Map<String, String>
         get() = buildMap {
             containers.forEach {
+                val containerName = it.name.replaceFirst(parameters.projectName.get(), name)
+
                 it.publishers.forEach { p ->
-                    put("container.${it.name}.${p.protocol}${p.targetPort}", "${p.url}:${p.publishedPort}")
+                    put("container.$containerName.${p.protocol}${p.targetPort}", "${p.url}:${p.publishedPort}")
                 }
             }
         }

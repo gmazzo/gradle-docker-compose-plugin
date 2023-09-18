@@ -6,6 +6,7 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.services.BuildServiceRegistry
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskProvider
+import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.kotlin.dsl.registerIfAbsent
 import org.gradle.process.JavaForkOptions
 import javax.inject.Inject
@@ -16,10 +17,10 @@ abstract class DockerComposeSpec @Inject constructor(
 ) : Named by (Named { name }), DockerComposeSettings {
 
     val buildService: Provider<DockerComposeService> =
-        sharedServices.registerIfAbsent(name, DockerComposeService::class) spec@{
+        sharedServices.registerIfAbsent("dockerCompose${name.capitalized()}", DockerComposeService::class) spec@{
             parameters params@{
                 this@params.name.set(name)
-                this@DockerComposeSpec.copyTo(this@params)
+                this@params.copyFrom(this@DockerComposeSpec)
             }
             this@spec.maxParallelUsages.convention(1)
         }

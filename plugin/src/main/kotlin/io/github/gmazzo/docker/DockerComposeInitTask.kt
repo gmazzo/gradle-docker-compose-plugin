@@ -19,6 +19,9 @@ abstract class DockerComposeInitTask @Inject constructor(
 ) : DefaultTask(), DockerComposeSettings {
 
     @get:Input
+    abstract override val projectName: Property<String>
+
+    @get:Input
     abstract override val command: Property<String>
 
     @get:Input

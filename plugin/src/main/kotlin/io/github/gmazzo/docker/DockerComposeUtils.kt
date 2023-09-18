@@ -13,9 +13,11 @@ internal fun ExecOperations.dockerCompose(
     workingDir = settings.workingDirectory.get().asFile
     commandLine = buildList {
         add(settings.command.get())
-        addAll(settings.commandExtraArgs.get())
+        add("--project-name")
+        add(settings.projectName.get())
         add("-f")
         add(settings.composeFile.singleFileOrThrow.absolutePath)
+        addAll(settings.commandExtraArgs.get())
         addAll(commands)
     }
     standardOutput = output
@@ -40,10 +42,14 @@ internal val FileCollection.singleFileOrThrow: File
 internal val DockerComposeSettings.hasComposeFile
     get() = !composeFile.asFileTree.isEmpty
 
-internal fun DockerComposeSettings.copyTo(other: DockerComposeSettings) {
-    other.command.set(command)
-    other.commandExtraArgs.set(commandExtraArgs)
-    other.composeFile.setFrom(composeFile)
-    other.workingDirectory.set(workingDirectory)
-    other.printLogs.set(printLogs)
+internal fun DockerComposeSettings.copyFrom(other: DockerComposeSettings) {
+    projectName.set(other.projectName)
+    command.set(other.command)
+    commandExtraArgs.set(other.commandExtraArgs)
+    composeFile.setFrom(other.composeFile)
+    workingDirectory.set(other.workingDirectory)
+    printLogs.set(other.printLogs)
 }
+
+val String.dockerName
+    get() = lowercase().replace("\\W".toRegex(), "_")
