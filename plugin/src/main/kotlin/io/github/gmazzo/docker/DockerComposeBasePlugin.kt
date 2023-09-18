@@ -18,13 +18,13 @@ class DockerComposeBasePlugin : Plugin<Project> {
                 else "${rootProject.name.dockerName}-${project.name.dockerName}")
             command.convention("docker-compose").finalizeValueOnRead()
             workingDirectory.convention(layout.projectDirectory).finalizeValueOnRead()
-            printLogs.convention(true).finalizeValueOnRead()
+            verbose.convention(true).finalizeValueOnRead()
         }
 
         extension.services.all spec@{
             val baseDir = layout.projectDirectory.dir("src/$name")
 
-            projectName.convention(extension.projectName.map { "${it}_${name.dockerName}" })
+            projectName.convention(extension.projectName.map { "${it}_${name.dockerName}" }).finalizeValueOnRead()
             command.convention(extension.command).finalizeValueOnRead()
             commandExtraArgs.convention(extension.commandExtraArgs).finalizeValueOnRead()
             composeFile
@@ -35,7 +35,7 @@ class DockerComposeBasePlugin : Plugin<Project> {
                 )
                 .finalizeValueOnRead()
             workingDirectory.convention(extension.workingDirectory).finalizeValueOnRead()
-            printLogs.convention(extension.printLogs).finalizeValueOnRead()
+            verbose.convention(extension.verbose).finalizeValueOnRead()
 
             tasks.register<DockerComposeInitTask>("init${if (name == SourceSet.MAIN_SOURCE_SET_NAME) "" else name.capitalized()}Containers") {
                 group = "Docker"

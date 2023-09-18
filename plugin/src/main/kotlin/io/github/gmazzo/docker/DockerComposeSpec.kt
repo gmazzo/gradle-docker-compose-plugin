@@ -3,6 +3,7 @@ package io.github.gmazzo.docker
 import org.gradle.api.Named
 import org.gradle.api.Task
 import org.gradle.api.provider.Provider
+import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceRegistry
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskProvider
@@ -14,20 +15,33 @@ import javax.inject.Inject
 abstract class DockerComposeSpec @Inject constructor(
     name: String,
     sharedServices: BuildServiceRegistry,
-) : Named by (Named { name }), DockerComposeSettings {
+) : Named by (Named { name }), DockerComposeSource {
 
+    /**
+     * Returns the service reference to be used on the [Task.usesService] API
+     */
     val buildService: Provider<DockerComposeService> =
         sharedServices.registerIfAbsent("dockerCompose${name.capitalized()}", DockerComposeService::class) spec@{
             parameters params@{
-                this@params.name.set(name)
+                this@params.serviceName.set(name)
                 this@params.copyFrom(this@DockerComposeSpec)
             }
             this@spec.maxParallelUsages.convention(1)
         }
 
+    /**
+     * Binds [buildService] to the given [task] as a [BuildService] and register the `docker-compose` file as [org.gradle.api.tasks.TaskInputs.files]
+     *
+     * Optionally, if [task] supports [JavaForkOptions] also exposes its [DockerComposeService.containers] as [JavaForkOptions.systemProperties]
+     */
     fun bindTo(task: TaskProvider<*>) =
         task.configure(::bindTo)
 
+    /**
+     * Binds [buildService] to the given [task] as a [BuildService] and register the `docker-compose` file as [org.gradle.api.tasks.TaskInputs.files]
+     *
+     * Optionally, if [task] supports [JavaForkOptions] also exposes its [DockerComposeService.containers] as [JavaForkOptions.systemProperties]
+     */
     fun bindTo(task: Task) = with(task) {
         usesService(buildService)
 

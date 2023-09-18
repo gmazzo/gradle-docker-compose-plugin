@@ -6,18 +6,18 @@ import java.io.File
 import java.io.PrintStream
 
 internal fun ExecOperations.dockerCompose(
-    settings: DockerComposeSettings,
+    spec: DockerComposeSource,
     vararg commands: String,
     output: PrintStream = System.out,
 ) = exec {
-    workingDir = settings.workingDirectory.get().asFile
+    workingDir = spec.workingDirectory.get().asFile
     commandLine = buildList {
-        add(settings.command.get())
+        add(spec.command.get())
         add("--project-name")
-        add(settings.projectName.get())
+        add(spec.projectName.get())
         add("-f")
-        add(settings.composeFile.singleFileOrThrow.absolutePath)
-        addAll(settings.commandExtraArgs.get())
+        add(spec.composeFile.singleFileOrThrow.absolutePath)
+        addAll(spec.commandExtraArgs.get())
         addAll(commands)
     }
     standardOutput = output
@@ -39,16 +39,20 @@ internal val FileCollection.singleFileOrThrow: File
         }
     }
 
-internal val DockerComposeSettings.hasComposeFile
+internal val DockerComposeSource.hasComposeFile
     get() = !composeFile.asFileTree.isEmpty
+
+internal fun DockerComposeSource.copyFrom(other: DockerComposeSource) {
+    copyFrom(other as DockerComposeSettings)
+    composeFile.setFrom(other.composeFile)
+}
 
 internal fun DockerComposeSettings.copyFrom(other: DockerComposeSettings) {
     projectName.set(other.projectName)
     command.set(other.command)
     commandExtraArgs.set(other.commandExtraArgs)
-    composeFile.setFrom(other.composeFile)
     workingDirectory.set(other.workingDirectory)
-    printLogs.set(other.printLogs)
+    verbose.set(other.verbose)
 }
 
 val String.dockerName

@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 plugins {
     alias(libs.plugins.kotlin.jvm)
     id("io.github.gmazzo.docker")
@@ -5,7 +7,9 @@ plugins {
     alias(libs.plugins.spring.boot)
 }
 
-java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+application.mainClass = "io.github.gmazzo.docker.demo.SampleAppKt"
 
 dependencies {
     implementation(libs.spring.starter.web)
@@ -25,4 +29,12 @@ testing.suites {
     tasks.check {
         dependsOn(integrationTest)
     }
+}
+
+val myService = dockerCompose.services.create("myService") {
+    composeFile.from(file("my-docker-compose.yaml"))
+}
+
+tasks.register("myTask") {
+    myService.bindTo(this)
 }

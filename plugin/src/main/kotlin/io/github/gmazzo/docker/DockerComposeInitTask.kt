@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 abstract class DockerComposeInitTask @Inject constructor(
     private val execOperations: ExecOperations,
-) : DefaultTask(), DockerComposeSettings {
+) : DefaultTask(), DockerComposeSource {
 
     @get:Input
     abstract override val projectName: Property<String>
@@ -42,7 +42,7 @@ abstract class DockerComposeInitTask @Inject constructor(
         get() = workingDirectory.map { it.asFile.toRelativeString(projectDir) }
 
     @get:Internal
-    abstract override val printLogs: Property<Boolean>
+    abstract override val verbose: Property<Boolean>
 
     @TaskAction
     fun initContainers() {

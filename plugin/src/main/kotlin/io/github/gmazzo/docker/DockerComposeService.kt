@@ -16,7 +16,7 @@ abstract class DockerComposeService @Inject constructor(
     private val execOperations: ExecOperations,
 ) : BuildService<DockerComposeService.Params>, AutoCloseable, Runnable {
 
-    private val name = parameters.name.get()
+    private val name = parameters.serviceName.get()
 
     private val json = Json {
         ignoreUnknownKeys = true
@@ -52,7 +52,12 @@ abstract class DockerComposeService @Inject constructor(
             println("Starting containers of Docker service `$name`...")
             execOperations.dockerCompose(parameters, "up", "--remove-orphans", "--wait")
 
-            if (parameters.printLogs.get()) {
+            if (parameters.verbose.get()) {
+                containersAsSystemProperties.takeUnless { it.isEmpty() }?.entries?.joinToString(
+                    prefix = "Containers ports are available trough properties:",
+                    transform = { (key, value) -> "\n - $key -> $value" }
+                )?.let(::println)
+
                 thread(isDaemon = true, name = "DockerCompose log for service `$name`") {
                     execOperations.dockerCompose(parameters, "logs", "--follow")
                 }
@@ -67,9 +72,9 @@ abstract class DockerComposeService @Inject constructor(
         }
     }
 
-    interface Params : BuildServiceParameters, DockerComposeSettings {
+    interface Params : BuildServiceParameters, DockerComposeSource {
 
-        val name: Property<String>
+        val serviceName: Property<String>
 
     }
 
