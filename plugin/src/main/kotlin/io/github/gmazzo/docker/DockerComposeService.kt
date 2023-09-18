@@ -6,7 +6,6 @@ import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
 import org.gradle.process.ExecOperations
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.io.PrintStream
 import java.nio.charset.StandardCharsets
 import javax.inject.Inject
@@ -24,26 +23,18 @@ abstract class DockerComposeService @Inject constructor(
         coerceInputValues = true
     }
 
-    private val composeFile: File? = with(parameters.composeFile.asFileTree) {
-        if (isEmpty) return@with null
-        try {
-            return@with singleFile
-
-        } catch (e: IllegalStateException) {
-            error(files.joinToString(e.message.orEmpty()) { "\n\t- $it" })
-        }
-    }
-
     init {
         run()
     }
 
     val containers: List<DockerContainer>
-        get() = composeFile?.let { file ->
+        get() {
+            if (!parameters.hasComposeFile) return emptyList()
+
             val content = ByteArrayOutputStream()
-            dockerCompose(file, "ps", "--format=json", output = PrintStream(content))
+            execOperations.dockerCompose(parameters, "ps", "--format=json", output = PrintStream(content))
             return json.decodeFromString(content.toString(StandardCharsets.UTF_8))
-        } ?: emptyList()
+        }
 
     val containersAsSystemProperties: Map<String, String>
         get() = buildMap {
@@ -55,39 +46,23 @@ abstract class DockerComposeService @Inject constructor(
         }
 
     override fun run() {
-        composeFile?.let { file ->
+        if (parameters.hasComposeFile) {
             println("Starting containers of Docker service `$name`...")
-            dockerCompose(file, "up", "--remove-orphans", "--wait")
+            execOperations.dockerCompose(parameters, "up", "--remove-orphans", "--wait")
 
             if (parameters.printLogs.get()) {
                 thread(isDaemon = true, name = "DockerCompose log for service `$name`") {
-                    dockerCompose(file, "logs", "--follow")
+                    execOperations.dockerCompose(parameters, "logs", "--follow")
                 }
             }
         }
     }
 
     override fun close() {
-        composeFile?.let { file ->
+        if (parameters.hasComposeFile) {
             println("Stopping containers of Docker service `$name`...")
-            dockerCompose(file, "down")
+            execOperations.dockerCompose(parameters, "down")
         }
-    }
-
-    private fun dockerCompose(
-        composeFile: File,
-        vararg commands: String,
-        output: PrintStream = System.out,
-    ) = execOperations.exec {
-        workingDir = parameters.workingDirectory.get().asFile
-        commandLine = buildList {
-            add(parameters.command.get())
-            addAll(parameters.commandExtraArgs.get())
-            add("-f")
-            add(composeFile.absolutePath)
-            addAll(commands)
-        }
-        standardOutput = output
     }
 
     interface Params : BuildServiceParameters, DockerComposeSettings {

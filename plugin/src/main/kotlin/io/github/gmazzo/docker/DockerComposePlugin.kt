@@ -19,29 +19,34 @@ class DockerComposePlugin : Plugin<Project> {
         val extension: DockerComposeExtension = extensions.getByType()
 
         plugins.withId("application") {
+            val main = extension.services.maybeCreate(SourceSet.MAIN_SOURCE_SET_NAME)
+
             tasks.named(ApplicationPlugin.TASK_RUN_NAME) {
-                extension.services.maybeCreate(SourceSet.MAIN_SOURCE_SET_NAME).bindTo(this)
+                main.bindTo(this)
             }
         }
 
         plugins.withId("jvm-test-suite") {
             @Suppress("UnstableApiUsage")
             the<TestingExtension>().suites.withType<JvmTestSuite> suite@{
-                val service = extension.services.maybeCreate(this@suite.name)
+                val test = extension.services.maybeCreate(this@suite.name)
 
                 targets.configureEach {
-                    service.bindTo(testTask)
+                    test.bindTo(testTask)
                 }
             }
         }
 
         plugins.withId("org.springframework.boot") {
+            val main = extension.services.maybeCreate(SourceSet.MAIN_SOURCE_SET_NAME)
+            val test = extension.services.maybeCreate(SourceSet.TEST_SOURCE_SET_NAME)
+
             tasks.named("bootRun") {
-                extension.services.maybeCreate(SourceSet.MAIN_SOURCE_SET_NAME).bindTo(this)
+                main.bindTo(this)
             }
             runCatching {
                 tasks.named("bootTestRun") {
-                    extension.services.maybeCreate(SourceSet.TEST_SOURCE_SET_NAME).bindTo(this)
+                    test.bindTo(this)
                 }
             }
         }

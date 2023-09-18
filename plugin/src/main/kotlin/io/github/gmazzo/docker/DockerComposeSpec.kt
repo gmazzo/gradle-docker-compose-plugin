@@ -19,11 +19,7 @@ abstract class DockerComposeSpec @Inject constructor(
         sharedServices.registerIfAbsent(name, DockerComposeService::class) spec@{
             parameters params@{
                 this@params.name.set(name)
-                this@params.command.set(this@DockerComposeSpec.command)
-                this@params.commandExtraArgs.set(this@DockerComposeSpec.commandExtraArgs)
-                this@params.composeFile.setFrom(this@DockerComposeSpec.composeFile)
-                this@params.workingDirectory.set(this@DockerComposeSpec.workingDirectory)
-                this@params.printLogs.set(this@DockerComposeSpec.printLogs)
+                this@DockerComposeSpec.copyTo(this@params)
             }
             this@spec.maxParallelUsages.convention(1)
         }
