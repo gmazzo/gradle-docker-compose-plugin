@@ -8,6 +8,8 @@ runs:
       uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
-        java-version: '8'
+        java-version: |
+          11
+          17
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
