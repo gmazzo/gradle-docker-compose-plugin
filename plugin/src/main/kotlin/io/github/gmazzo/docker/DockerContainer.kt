@@ -6,13 +6,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class DockerContainer(
     @SerialName("Command") val command: String,
-    @SerialName("Created") val created: Long,
     @SerialName("ExitCode") val exitCode: Int,
     @SerialName("Health") val health: String,
     @SerialName("ID") val id: String,
     @SerialName("Image") val image: String,
     @SerialName("Name") val name: String,
-    @SerialName("Project") val project: String,
     @SerialName("Publishers") val publishers: List<Publisher> = emptyList(),
     @SerialName("Service") val service: String,
     @SerialName("State") val state: String,

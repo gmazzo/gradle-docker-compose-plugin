@@ -37,8 +37,11 @@ abstract class DockerComposeService @Inject constructor(
                 toString(StandardCharsets.UTF_8)
             }
             try {
-                return if (content.startsWith("[")) json.decodeFromString<List<DockerContainer>>(content)
-                else listOf(json.decodeFromString<DockerContainer>(content))
+                return if (content.startsWith("[")) json.decodeFromString(content)
+                else content.lineSequence()
+                    .filter { it.isNotBlank() }
+                    .map { json.decodeFromString<DockerContainer>(it) }
+                    .toList()
 
             } catch (e: SerializationException) {
                 throw IllegalArgumentException("Failed to parse JSON:\n$content\n", e)
