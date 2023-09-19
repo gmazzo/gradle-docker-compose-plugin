@@ -1,5 +1,6 @@
 package io.github.gmazzo.docker
 
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService
@@ -31,9 +32,17 @@ abstract class DockerComposeService @Inject constructor(
         get() {
             if (!parameters.hasComposeFile) return emptyList()
 
-            val content = ByteArrayOutputStream()
-            execOperations.dockerCompose(parameters, "ps", "--format=json", output = PrintStream(content))
-            return json.decodeFromString(content.toString(StandardCharsets.UTF_8))
+            val content: String = with(ByteArrayOutputStream()) {
+                execOperations.dockerCompose(parameters, "ps", "--format=json", output = PrintStream(this))
+                toString(StandardCharsets.UTF_8)
+            }
+            try {
+                return if (content.startsWith("[")) json.decodeFromString<List<DockerContainer>>(content)
+                else listOf(json.decodeFromString<DockerContainer>(content))
+
+            } catch (e: SerializationException) {
+                throw IllegalArgumentException("Failed to parse JSON:\n$content\n", e)
+            }
         }
 
     val containersAsSystemProperties: Map<String, String>

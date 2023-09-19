@@ -7,14 +7,14 @@ import org.gradle.api.provider.Property
 interface DockerComposeSettings {
 
     /**
-     * The name of the Docker composed project used to generate container names.
+     * The name of the Docker compose project used to generate container names.
      *
      * Maps to `--project-name` argument
      */
     val projectName: Property<String>
 
     /**
-     * The `docker-compose` command path.
+     * The `docker` command path.
      *
      * It should not be changed unless you want to provide a full path for it.
      */

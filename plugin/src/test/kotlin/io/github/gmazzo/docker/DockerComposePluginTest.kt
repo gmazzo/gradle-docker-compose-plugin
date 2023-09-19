@@ -36,6 +36,11 @@ class DockerComposePluginTest {
                                 image: yeasy/simple-web
                                 ports:
                                   - 127.0.0.1:8080:80
+                            other:
+                                image: yeasy/simple-web
+                                ports:
+                                  - 127.0.0.1:8090:80
+                                  - 127.0.0.1:8091:81
                     """.trimIndent())
             }
     }
@@ -67,6 +72,8 @@ class DockerComposePluginTest {
             assertEquals(
                 mapOf(
                     "container.integrationTest-app-1.tcp80" to "127.0.0.1:8080",
+                    "container.integrationTest-other-1.tcp80" to "127.0.0.1:8090",
+                    "container.integrationTest-other-1.tcp81" to "127.0.0.1:8091",
                 ), integrationTest.buildService.get().containersAsSystemProperties
             )
 

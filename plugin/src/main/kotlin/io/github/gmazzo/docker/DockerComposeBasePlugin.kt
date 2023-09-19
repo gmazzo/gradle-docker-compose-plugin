@@ -16,7 +16,7 @@ class DockerComposeBasePlugin : Plugin<Project> {
             projectName.convention(
                 if (rootProject == project) rootProject.name.dockerName
                 else "${rootProject.name.dockerName}-${project.name.dockerName}")
-            command.convention("docker-compose").finalizeValueOnRead()
+            command.convention("docker").finalizeValueOnRead()
             workingDirectory.convention(layout.projectDirectory).finalizeValueOnRead()
             verbose.convention(true).finalizeValueOnRead()
         }

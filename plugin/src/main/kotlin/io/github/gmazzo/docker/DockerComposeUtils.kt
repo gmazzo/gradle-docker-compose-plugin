@@ -13,6 +13,7 @@ internal fun ExecOperations.dockerCompose(
     workingDir = spec.workingDirectory.get().asFile
     commandLine = buildList {
         add(spec.command.get())
+        add("compose")
         add("--project-name")
         add(spec.projectName.get())
         add("-f")
