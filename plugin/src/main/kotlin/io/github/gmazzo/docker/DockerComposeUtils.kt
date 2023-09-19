@@ -16,11 +16,15 @@ internal fun ExecOperations.dockerCompose(
         add("--project-name")
         add(spec.projectName.get())
         add("-f")
-        add(spec.composeFile.singleFileOrThrow.absolutePath)
+        add(spec.composeFile.singleFileOrThrow.toRelativeString(workingDir))
         addAll(spec.commandExtraArgs.get())
         addAll(commands)
     }
     standardOutput = output
+
+    if (spec.verbose.get()) {
+        println("Running command: `${commandLine.joinToString(separator = " ")}`")
+    }
 }
 
 internal val FileCollection.singleFileOrThrow: File
