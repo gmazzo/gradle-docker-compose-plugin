@@ -5,19 +5,20 @@ import kotlinx.serialization.json.Json
 import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
-import org.gradle.process.ExecOperations
+import org.slf4j.LoggerFactory
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import java.nio.charset.StandardCharsets
-import javax.inject.Inject
 import kotlin.concurrent.thread
 
 @Suppress("LeakingThis")
-abstract class DockerComposeService @Inject constructor(
-    private val execOperations: ExecOperations,
-) : BuildService<DockerComposeService.Params>, AutoCloseable, Runnable {
+abstract class DockerComposeService : BuildService<DockerComposeService.Params>, AutoCloseable, Runnable {
+
+    private val logger = LoggerFactory.getLogger(DockerComposeService::class.java)
 
     private val name = parameters.serviceName.get()
+
+    private val docker = parameters.dockerService.get()
 
     private val json = Json {
         ignoreUnknownKeys = true
@@ -32,8 +33,8 @@ abstract class DockerComposeService @Inject constructor(
         get() {
             if (!parameters.hasComposeFile) return emptyList()
 
-            val content: String = with(ByteArrayOutputStream()) {
-                execOperations.dockerCompose(parameters, "ps", "--format=json", output = PrintStream(this))
+            val content: String = with(ByteArrayOutputStream()) out@{
+                docker.dockerComposeExec(parameters, "ps", "--format=json") { standardOutput = PrintStream(this@out) }
                 toString(StandardCharsets.UTF_8)
             }
             try {
@@ -61,17 +62,17 @@ abstract class DockerComposeService @Inject constructor(
 
     override fun run() {
         if (parameters.hasComposeFile) {
-            println("Starting containers of Docker service `$name`...")
-            execOperations.dockerCompose(parameters, "up", "--remove-orphans", "--wait")
+            logger.info("Starting containers of Docker service `{}`...", name)
+            docker.dockerComposeExec(parameters, "up", "--remove-orphans", "--wait")
 
             if (parameters.verbose.get()) {
                 containersAsSystemProperties.takeUnless { it.isEmpty() }?.entries?.joinToString(
                     prefix = "Containers ports are available trough properties:",
                     transform = { (key, value) -> "\n - $key -> $value" }
-                )?.let(::println)
+                )?.let(logger::info)
 
                 thread(isDaemon = true, name = "DockerCompose log for service `$name`") {
-                    execOperations.dockerCompose(parameters, "logs", "--follow")
+                    docker.dockerComposeExec(parameters, "logs", "--follow")
                 }
             }
         }
@@ -79,14 +80,19 @@ abstract class DockerComposeService @Inject constructor(
 
     override fun close() {
         if (parameters.hasComposeFile) {
-            println("Stopping containers of Docker service `$name`...")
-            execOperations.dockerCompose(parameters, "down")
+            logger.info("Stopping containers of Docker service `{}`...", name)
+            docker.dockerComposeExec(parameters, "down")
         }
     }
+
+    private val DockerComposeSource.hasComposeFile
+        get() = !composeFile.asFileTree.isEmpty
 
     interface Params : BuildServiceParameters, DockerComposeSource {
 
         val serviceName: Property<String>
+
+        val dockerService: Property<DockerService>
 
     }
 

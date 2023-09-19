@@ -4,30 +4,17 @@ import org.gradle.api.Named
 import org.gradle.api.Task
 import org.gradle.api.provider.Provider
 import org.gradle.api.services.BuildService
-import org.gradle.api.services.BuildServiceRegistry
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskProvider
-import org.gradle.configurationcache.extensions.capitalized
-import org.gradle.kotlin.dsl.registerIfAbsent
 import org.gradle.process.JavaForkOptions
-import javax.inject.Inject
 
-abstract class DockerComposeSpec @Inject constructor(
-    name: String,
-    sharedServices: BuildServiceRegistry,
-) : Named by (Named { name }), DockerComposeSource {
+abstract class DockerComposeSpec : Named, DockerComposeSource {
 
     /**
      * Returns the service reference to be used on the [Task.usesService] API
      */
-    val buildService: Provider<DockerComposeService> =
-        sharedServices.registerIfAbsent("dockerCompose${name.capitalized()}", DockerComposeService::class) spec@{
-            parameters params@{
-                this@params.serviceName.set(name)
-                this@params.copyFrom(this@DockerComposeSpec)
-            }
-            this@spec.maxParallelUsages.convention(1)
-        }
+    lateinit var buildService: Provider<DockerComposeService>
+        internal set
 
     /**
      * Binds [buildService] to the given [task] as a [BuildService] and register the `docker-compose` file as [org.gradle.api.tasks.TaskInputs.files]

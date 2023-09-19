@@ -15,6 +15,8 @@ version = providers
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(11))
 
+kotlin.compilerOptions.freeCompilerArgs.add("-Xjvm-default=all")
+
 samWithReceiver.annotation(HasImplicitReceiver::class.java.name)
 
 dependencies {

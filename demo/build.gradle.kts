@@ -31,10 +31,8 @@ testing.suites {
     }
 }
 
-val myService = dockerCompose.services.create("myService") {
-    composeFile.from(file("my-docker-compose.yaml"))
-}
-
-tasks.register("myTask") {
-    myService.bindTo(this)
+dockerCompose {
+    setupDocker {
+        dockerExec("version")
+    }
 }
