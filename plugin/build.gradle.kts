@@ -11,7 +11,7 @@ group = "io.github.gmazzo.docker"
 description = "Docker Gradle Plugin"
 version = providers
     .exec { commandLine("git", "describe", "--tags", "--always") }
-    .standardOutput.asText.map { it.trim().removePrefix("v") }
+    .standardOutput.asText.get().trim().removePrefix("v")
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(11))
 
