@@ -30,9 +30,3 @@ testing.suites {
         dependsOn(integrationTest)
     }
 }
-
-dockerCompose {
-    setupDocker {
-        dockerExec("version")
-    }
-}

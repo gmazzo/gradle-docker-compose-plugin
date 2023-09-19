@@ -1,11 +1,13 @@
 package io.github.gmazzo.docker
 
 import org.gradle.api.Action
+import org.gradle.api.credentials.Credentials
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Nested
 
 @JvmDefaultWithoutCompatibility
-interface DockerSettings {
+interface DockerSettings : Credentials {
 
     /**
      * The `docker` command path.
@@ -20,28 +22,26 @@ interface DockerSettings {
     val commandExtraArgs: ListProperty<String>
 
     /**
-     * Actions to be executed before any [DockerService] is started (such as a `docker login`)
-     */
-    val setupDocker: ListProperty<Action<DockerService>>
-
-    /**
-     * Adds an action to be executed before any [DockerService] is started (such as a `docker login`)
-     */
-    fun setupDocker(action: Action<DockerService>) = setupDocker.add(action)
-
-    /**
-     * Actions to be executed after all [DockerService] are stopped.
-     */
-    val cleanupDocker: ListProperty<Action<DockerService>>
-
-    /**
-     * Adds an action to be executed after all [DockerService] are stopped.
-     */
-    fun cleanupDocker(action: Action<DockerService>) = cleanupDocker.add(action)
-
-    /**
      * If logs from the running containers should be printed to the Gradle standard output or not
      */
     val verbose: Property<Boolean>
+
+    /**
+     * Optional login information to perform `docker login` command before any [DockerComposeService] is created
+     */
+    @get:Nested
+    val login: Login
+
+    fun login(action: Action<Login>) = action.execute(login)
+
+    interface Login {
+
+        val server: Property<String>
+
+        val username: Property<String>
+
+        val password: Property<String>
+
+    }
 
 }

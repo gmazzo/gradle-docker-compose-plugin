@@ -14,7 +14,7 @@ import javax.inject.Inject
 @Suppress("LeakingThis")
 abstract class DockerService @Inject constructor(
     private val execOperations: ExecOperations,
-) : BuildService<DockerService.Params>, AutoCloseable, Runnable {
+) : BuildService<DockerService.Params>, Runnable {
 
     private val logger = LoggerFactory.getLogger(DockerService::class.java)
 
@@ -23,16 +23,16 @@ abstract class DockerService @Inject constructor(
     }
 
     override fun run() {
-        logger.info("Starting Docker service...")
-        parameters.setupDocker.get().forEach {
-            it.execute(this)
-        }
-    }
+        parameters.login.server.orNull?.let { server ->
+            logger.info("Performing Docker login to `$server`...")
 
-    override fun close() {
-        logger.info("Tearing down Docker service...")
-        parameters.cleanupDocker.get().forEach {
-            it.execute(this)
+            val user = parameters.login.username.orNull
+            val password = parameters.login.password.orNull
+
+            dockerExec("login", server,
+                *user?.let { arrayOf("--username", it, "--password-stdin") }.orEmpty()){
+                if (password != null) standardInput = password.byteInputStream()
+            }
         }
     }
 

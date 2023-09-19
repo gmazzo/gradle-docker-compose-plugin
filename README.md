@@ -50,6 +50,25 @@ Or in Spring, by using `@Value` annotation:
 private lateinit var appEndpoint: String
 ```
 
+## Log in to a Docker registry or cloud backend
+The `dockerCompose.login` API allowing you to provide a `server` and optionally a `username/password` that will perform `docker login` command before any `DockerComposeService` is started
+
+### Logging in into Amazon ECR
+The following is an example on how to pipe the password obtained by `aws ecr get-login-password` command into the `dockerCompose.login.password` DSL:
+```kotlin
+dockerCompose {
+    login {
+        val awsPassword = providers
+            .exec { commandLine("aws", "ecr", "get-login-password", "--region", "eu-west-1") }
+            .standardOutput.asText
+        
+        server.set("<accountId>.dkr.ecr.eu-west-1.amazonaws.com")
+        username.set("AWS")
+        password.set(awsPassword)
+    }
+}
+```
+
 ## Decoupling from JVM plugins
 By default, this plugin binds automatically with `java`, `application`, `jvm-test-suite` and `org.springframework.boot` plugins, creating default services per registered `SourceSet` (`main`, `test`, etc...).
 

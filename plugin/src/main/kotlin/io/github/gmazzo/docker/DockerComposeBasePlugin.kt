@@ -30,8 +30,9 @@ class DockerComposeBasePlugin @Inject constructor(
         val dockerService = sharedServices.registerIfAbsent("docker", DockerService::class) {
             parameters.command.set(extension.command)
             parameters.commandExtraArgs.set(extension.commandExtraArgs)
-            parameters.setupDocker.set(extension.setupDocker)
-            parameters.cleanupDocker.set(extension.cleanupDocker)
+            parameters.login.server.set(extension.login.server)
+            parameters.login.username.set(extension.login.username)
+            parameters.login.password.set(extension.login.password)
             parameters.verbose.set(extension.verbose)
         }
 
