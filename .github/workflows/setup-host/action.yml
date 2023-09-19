@@ -13,3 +13,8 @@ runs:
           17
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
+    - name: Print Setup
+      shell: bash
+      run: |
+        java -version
+        docker version
