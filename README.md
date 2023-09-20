@@ -34,8 +34,10 @@ You will find in the following property:
 ```
  - container.main-app-1.tcp80 -> 0.0.0.0:8080
              │    │   │ │  │     └ exposed host and port on the host machine
+             │    │   │ ├──┼ port
              │    │   │ │  └ number of the port
              │    │   │ └ type of the port
+             ├────┼───┼ container name
              │    │   └ id of the replica
              │    └ name of the service defined in the compose file
              └ name of the source set
