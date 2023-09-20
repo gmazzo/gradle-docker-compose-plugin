@@ -1,4 +1,4 @@
-package io.github.gmazzo.docker
+package io.github.gmazzo.docker.compose
 
 import org.gradle.api.Action
 import org.gradle.api.file.FileCollection

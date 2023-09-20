@@ -1,4 +1,4 @@
-package io.github.gmazzo.docker
+package io.github.gmazzo.docker.compose
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project

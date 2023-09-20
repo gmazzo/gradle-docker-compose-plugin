@@ -7,8 +7,8 @@ plugins {
     alias(libs.plugins.gradle.pluginPublish)
 }
 
-group = "io.github.gmazzo.docker"
-description = "Docker Gradle Plugin"
+group = "io.github.gmazzo.docker.compose"
+description = "Docker Compose Gradle Plugin"
 version = providers
     .exec { commandLine("git", "describe", "--tags", "--always") }
     .standardOutput.asText.get().trim().removePrefix("v")
@@ -29,22 +29,22 @@ dependencies {
 }
 
 gradlePlugin {
-    website.set("https://github.com/gmazzo/gradle-docker-plugin")
-    vcsUrl.set("https://github.com/gmazzo/gradle-docker-plugin")
+    website.set("https://github.com/gmazzo/gradle-docker-compose-plugin")
+    vcsUrl.set("https://github.com/gmazzo/gradle-docker-compose-plugin")
 
-    plugins.create("docker") {
-        id = "io.github.gmazzo.docker.base"
+    plugins.create("dockerComposeBase") {
+        id = "io.github.gmazzo.docker.compose.base"
         displayName = name
-        implementationClass = "io.github.gmazzo.docker.DockerComposeBasePlugin"
+        implementationClass = "io.github.gmazzo.docker.compose.DockerComposeBasePlugin"
         description = "Spawns Docker Compose environments for tasks as a Gradle's Shared Build Service"
         tags.addAll("docker", "docker-compose", "build-service", "shared-build-service")
     }
 
-    plugins.create("dockerJVMTests") {
-        id = "io.github.gmazzo.docker"
+    plugins.create("dockerCompose") {
+        id = "io.github.gmazzo.docker.compose"
         displayName = name
-        implementationClass = "io.github.gmazzo.docker.DockerComposePlugin"
-        description = "Spawns Docker Compose environments for Test suites as a Gradle's Shared Build Service"
+        implementationClass = "io.github.gmazzo.docker.compose.DockerComposePlugin"
+        description = "Spawns Docker Compose environments for main code and test suites as a Gradle's Shared Build Service"
         tags.addAll("docker", "docker-compose", "build-service", "shared-build-service")
     }
 }

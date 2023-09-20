@@ -1,4 +1,4 @@
-package io.github.gmazzo.docker.demo
+package io.github.gmazzo.docker.compose.demo
 
 import kotlin.test.Test
 

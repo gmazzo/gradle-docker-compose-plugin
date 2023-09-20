@@ -1,16 +1,16 @@
-![GitHub](https://img.shields.io/github/license/gmazzo/gradle-docker-plugin)
-[![Gradle Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/io.github.gmazzo.docker)](https://plugins.gradle.org/plugin/io.github.gmazzo.docker)
-![Build Status](https://github.com/gmazzo/gradle-docker-plugin/actions/workflows/build.yaml/badge.svg)
-[![Coverage](https://codecov.io/gh/gmazzo/gradle-docker-plugin/branch/main/graph/badge.svg?token=ExYkP1Q9oE)](https://codecov.io/gh/gmazzo/gradle-docker-plugin)
+![GitHub](https://img.shields.io/github/license/gmazzo/gradle-docker-compose-plugin)
+[![Gradle Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/io.github.gmazzo.docker.compose)](https://plugins.gradle.org/plugin/io.github.gmazzo.docker.compose)
+![Build Status](https://github.com/gmazzo/gradle-docker-compose-plugin/actions/workflows/build.yaml/badge.svg)
+[![Coverage](https://codecov.io/gh/gmazzo/gradle-docker-compose-plugin/branch/main/graph/badge.svg?token=ExYkP1Q9oE)](https://codecov.io/gh/gmazzo/gradle-docker-compose-plugin)
 
-# gradle-docker-plugin
+# gradle-docker-compose-plugin
 Spawns Docker Compose environments for tasks as a [Shared Build Service](https://docs.gradle.org/current/userguide/build_services.html)
 
 # Usage
 Apply the plugin in your project's buildscript:
 ```kotlin
 plugins {
-    id("io.github.gmazzo.docker") version "<latest>"
+    id("io.github.gmazzo.docker.compose") version "<latest>"
 }
 ```
 And then add a `docker-compose.yml` (or `.yaml` or `.json`) file under the specific source set:
@@ -72,14 +72,14 @@ dockerCompose {
 ## Decoupling from JVM plugins
 By default, this plugin binds automatically with `java`, `application`, `jvm-test-suite` and `org.springframework.boot` plugins, creating default services per registered `SourceSet` (`main`, `test`, etc...).
 
-If you don't need this behavior and want to configure and bind the `DockerComposeService`s on your own, you should apply `io.github.gmazzo.docker.base` instead.
+If you don't need this behavior and want to configure and bind the `DockerComposeService`s on your own, you should apply `io.github.gmazzo.docker.compose.base` instead.
 
 Later use the `DockerComposeSpec.bindTo(Task)` API 
 
 An example could be:
 ```kotlin
 plugins {
-    id("io.github.gmazzo.docker.base")
+    id("io.github.gmazzo.docker.compose.base")
 }
 
 val myService = dockerCompose.services.create("myService") {

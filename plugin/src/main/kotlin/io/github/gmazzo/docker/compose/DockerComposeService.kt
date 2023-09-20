@@ -1,4 +1,4 @@
-package io.github.gmazzo.docker
+package io.github.gmazzo.docker.compose
 
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json

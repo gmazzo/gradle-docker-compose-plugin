@@ -2,14 +2,14 @@
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
-    id("io.github.gmazzo.docker")
+    id("io.github.gmazzo.docker.compose")
     application
     alias(libs.plugins.spring.boot)
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-application.mainClass = "io.github.gmazzo.docker.demo.SampleAppKt"
+application.mainClass = "io.github.gmazzo.docker.compose.demo.SampleAppKt"
 
 dependencies {
     implementation(libs.spring.starter.web)

@@ -1,4 +1,4 @@
-package io.github.gmazzo.docker
+package io.github.gmazzo.docker.compose
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

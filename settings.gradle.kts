@@ -7,7 +7,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "gradle-docker-plugin"
+rootProject.name = "gradle-docker-compose-plugin"
 
 includeBuild("plugin")
 include("demo")

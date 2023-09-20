@@ -1,4 +1,4 @@
-package io.github.gmazzo.docker
+package io.github.gmazzo.docker.compose
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.plugins.jvm.JvmTestSuite

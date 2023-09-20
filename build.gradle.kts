@@ -2,20 +2,15 @@ plugins {
     base
 }
 
-val pluginBuild = gradle.includedBuild("plugin")
+tasks {
+    val pluginBuild = gradle.includedBuild("plugin")
 
-tasks.check {
-    dependsOn(pluginBuild.task(":$name"))
-}
-
-tasks.build {
-    dependsOn(pluginBuild.task(":$name"))
-}
-
-tasks.register("publish") {
-    dependsOn(pluginBuild.task(":$name"))
-}
-
-tasks.register("publishToMavenLocal") {
-    dependsOn(pluginBuild.task(":$name"))
+    sequenceOf(
+        check,
+        build,
+        register("publish"),
+        register("publishToMavenLocal"),
+    ).forEach {
+        it.configure { dependsOn(pluginBuild.task(":$name")) }
+    }
 }
