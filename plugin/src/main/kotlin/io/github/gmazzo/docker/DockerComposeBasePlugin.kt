@@ -27,7 +27,7 @@ class DockerComposeBasePlugin @Inject constructor(
             verbose.convention(true).finalizeValueOnRead()
         }
 
-        val dockerService = sharedServices.registerIfAbsent("docker", DockerService::class) {
+        val dockerService = sharedServices.registerIfAbsent("docker$path", DockerService::class) {
             parameters.command.set(extension.command)
             parameters.commandExtraArgs.set(extension.commandExtraArgs)
             parameters.login.server.set(extension.login.server)
@@ -50,7 +50,7 @@ class DockerComposeBasePlugin @Inject constructor(
             workingDirectory.convention(extension.workingDirectory).finalizeValueOnRead()
             verbose.convention(extension.verbose).finalizeValueOnRead()
 
-            buildService = sharedServices.registerIfAbsent("dockerCompose${name.capitalized()}", DockerComposeService::class) {
+            buildService = sharedServices.registerIfAbsent("docker$path:$name", DockerComposeService::class) {
                 parameters params@{
                     this@params.serviceName.set(name)
                     this@params.dockerService.set(dockerService)
