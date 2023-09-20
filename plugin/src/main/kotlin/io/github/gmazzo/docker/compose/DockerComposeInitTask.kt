@@ -39,7 +39,7 @@ abstract class DockerComposeInitTask : DefaultTask(), DockerComposeSource {
 
     @TaskAction
     fun initContainers() {
-        dockerService.get().dockerComposeExec(this, "create", "--remove-orphans")
+        dockerService.get().composeExec(this, "create", "--remove-orphans")
     }
 
 }

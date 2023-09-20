@@ -34,7 +34,7 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
             if (!parameters.hasComposeFile) return emptyList()
 
             val content: String = with(ByteArrayOutputStream()) out@{
-                docker.dockerComposeExec(parameters, "ps", "--format=json") { standardOutput = PrintStream(this@out) }
+                docker.composeExec(parameters, "ps", "--format=json") { standardOutput = PrintStream(this@out) }
                 toString(StandardCharsets.UTF_8)
             }
             try {
@@ -63,7 +63,7 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
     override fun run() {
         if (parameters.hasComposeFile) {
             logger.info("Starting containers of Docker service `{}`...", name)
-            docker.dockerComposeExec(parameters, "up", "--remove-orphans", "--wait")
+            docker.composeExec(parameters, "up", "--remove-orphans", "--wait")
 
             if (parameters.verbose.get()) {
                 containersAsSystemProperties.takeUnless { it.isEmpty() }?.entries?.joinToString(
@@ -72,7 +72,7 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
                 )?.let(logger::info)
 
                 thread(isDaemon = true, name = "DockerCompose log for service `$name`") {
-                    docker.dockerComposeExec(parameters, "logs", "--follow")
+                    docker.composeExec(parameters, "logs", "--follow")
                 }
             }
         }
@@ -81,7 +81,7 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
     override fun close() {
         if (parameters.hasComposeFile) {
             logger.info("Stopping containers of Docker service `{}`...", name)
-            docker.dockerComposeExec(parameters, "down")
+            docker.composeExec(parameters, "down")
         }
     }
 

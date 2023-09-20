@@ -6,6 +6,9 @@
 # gradle-docker-compose-plugin
 Spawns Docker Compose environments for tasks as a [Shared Build Service](https://docs.gradle.org/current/userguide/build_services.html)
 
+## Why a `BuildService`?
+Comparing with a traditional `Task` approach, `BuildService`s will integrate better with Gradle's `UP-TO-DATE` and `FROM-CACHE` states, spawning the containers **only** if the target task is effectively run.
+
 # Usage
 Apply the plugin in your project's buildscript:
 ```kotlin
@@ -70,6 +73,17 @@ dockerCompose {
     }
 }
 ```
+
+## Pre-initialize containers
+Per each `DockerComposeService` registered (`main`, `test`, etcs...), an **optional** initialization task will be added to the build.
+
+For the `main` service it will be `initContainers`, `test` will be `initTestContainers`, `integrationTest` will be `initIntegrationTestContainers` and so on.
+
+You may run the Gradle build targeting this specific task to "win some time" by creating (but not starting) the containers (downloading their images in the process): `docker compose create` command.
+
+> [!NOTE]
+> Keep in mind there is no way to know if the target task (`run`, `test`, etc...) will be actually run until it reaches the point the `UP-TO-DATE` check is done, just before its about to run. So pre-creating the containers with those init `Task`s may be a waste of resources, but it may save some overall time if actually ends up running. 
+> Choose wisely.
 
 ## Decoupling from JVM plugins
 By default, this plugin binds automatically with `java`, `application`, `jvm-test-suite` and `org.springframework.boot` plugins, creating default services per registered `SourceSet` (`main`, `test`, etc...).
