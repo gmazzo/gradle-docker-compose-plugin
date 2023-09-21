@@ -27,7 +27,7 @@ class DockerComposeBasePlugin @Inject constructor(
             verbose.convention(true).finalizeValueOnRead()
             if (rootExtension != null) {
                 command.convention(rootExtension.command)
-                commandExtraArgs.convention(rootExtension.commandExtraArgs)
+                options.addAll(rootExtension.options)
                 verbose.convention(rootExtension.verbose)
                 login.server.convention(rootExtension.login.server)
                 login.username.convention(rootExtension.login.username)
@@ -44,7 +44,7 @@ class DockerComposeBasePlugin @Inject constructor(
 
         val dockerService = sharedServices.registerIfAbsent("docker$path", DockerService::class) {
             parameters.command.set(extension.command)
-            parameters.commandExtraArgs.set(extension.commandExtraArgs)
+            parameters.options.set(extension.options)
             parameters.login.server.set(extension.login.server)
             parameters.login.username.set(extension.login.username)
             parameters.login.password.set(extension.login.password)

@@ -42,7 +42,7 @@ abstract class DockerService @Inject constructor(
         action: Action<in ExecSpec>? = null,
     ): ExecResult = execOperations.exec {
         executable = parameters.command.get()
-        args = parameters.commandExtraArgs.get() + command
+        args = parameters.options.get() + command
         action?.execute(this)
 
         if (parameters.verbose.get()) {

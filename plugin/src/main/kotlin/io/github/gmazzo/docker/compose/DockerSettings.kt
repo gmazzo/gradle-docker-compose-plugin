@@ -17,9 +17,9 @@ interface DockerSettings : Credentials {
     val command: Property<String>
 
     /**
-     * Any extra argument to append after all `docker compose up` and similar commands.
+     * Optional options that corresponds to `Global Options` of the `docker` command
      */
-    val commandExtraArgs: ListProperty<String>
+    val options: ListProperty<String>
 
     /**
      * If logs from the running containers should be printed to the Gradle standard output or not
