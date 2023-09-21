@@ -74,6 +74,23 @@ dockerCompose {
 }
 ```
 
+## Multi module setup
+This plugin can be applied on multiple submodules independently without any conflicts: each `DockerComposeService` will be unique per project and source set.
+
+To avoid complex setup and have to replicate the shared configuration between project (like `dockerCompose.login` DSL), if the plugin is applied at root project, all child modules will default to the settings set there.
+
+So, at root project you can have a shared setup like this:
+```kotlin
+dockerCompose {
+    verbose.set(false)
+    login {
+        username.set("myUser")
+        password.set("myPass")
+    }
+}
+```
+and other submodules will default to it as well.
+
 ## Pre-initialize containers
 Per each `DockerComposeService` registered (`main`, `test`, etcs...), an **optional** initialization task will be added to the build.
 

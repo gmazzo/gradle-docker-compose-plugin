@@ -6,6 +6,7 @@ import org.gradle.api.services.BuildServiceRegistry
 import org.gradle.api.tasks.SourceSet
 import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.registerIfAbsent
 import javax.inject.Inject
@@ -16,15 +17,29 @@ class DockerComposeBasePlugin @Inject constructor(
 
     override fun apply(target: Project): Unit = with(target) {
         val extension: DockerComposeExtension = extensions.create("dockerCompose")
+        val rootExtension: DockerComposeExtension? =
+            if (project != rootProject) rootProject.extensions.findByType()
+            else null
 
         with(extension) {
+            // DockerSettings defaults
+            command.convention("docker").finalizeValueOnRead()
+            verbose.convention(true).finalizeValueOnRead()
+            if (rootExtension != null) {
+                command.convention(rootExtension.command)
+                commandExtraArgs.convention(rootExtension.commandExtraArgs)
+                verbose.convention(rootExtension.verbose)
+                login.server.convention(rootExtension.login.server)
+                login.username.convention(rootExtension.login.username)
+                login.password.convention(rootExtension.login.password)
+            }
+
+            // DockerComposeSettings defaults
             projectName.convention(
                 if (rootProject == project) rootProject.name.dockerName
                 else "${rootProject.name.dockerName}-${project.name.dockerName}"
             )
-            command.convention("docker").finalizeValueOnRead()
             workingDirectory.convention(layout.projectDirectory).finalizeValueOnRead()
-            verbose.convention(true).finalizeValueOnRead()
         }
 
         val dockerService = sharedServices.registerIfAbsent("docker$path", DockerService::class) {
