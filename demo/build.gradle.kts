@@ -1,5 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
+import org.gradle.configurationcache.extensions.capitalized
+
+
 plugins {
     alias(libs.plugins.kotlin.jvm)
     id("io.github.gmazzo.docker.compose")
@@ -24,9 +27,13 @@ testing.suites {
         dependencies {
             implementation(project())
         }
+
+        // not necessary, just to validate this task works correctly as part of the CI
+        targets.all { testTask { dependsOn(tasks.named("init${name.capitalized()}Containers")) } }
     }
 
     tasks.check {
         dependsOn(integrationTest)
     }
+
 }

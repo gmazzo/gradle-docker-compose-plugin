@@ -1,8 +1,10 @@
 package io.github.gmazzo.docker.compose
 
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 
+@JvmDefaultWithoutCompatibility
 interface DockerComposeSettings {
 
     /**
@@ -20,8 +22,25 @@ interface DockerComposeSettings {
     val workingDirectory: DirectoryProperty
 
     /**
+     * Optional options to append to the `docker compose create` command
+     */
+    val optionsCreate: ListProperty<String>
+
+    /**
+     * Optional options to append to the `docker compose up` command.
+     *
+     * For consistency, [optionsCreate] will be propagated to [optionsUp]
+     */
+    val optionsUp: ListProperty<String>
+
+    /**
+     * Optional options to append to the `docker compose down` command
+     */
+    val optionsDown: ListProperty<String>
+
+    /**
      * If logs from the running containers should be printed to the Gradle standard output or not
      */
-    val verbose: Property<Boolean>
+    val showLogs: Property<Boolean>
 
 }

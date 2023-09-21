@@ -22,11 +22,6 @@ interface DockerSettings : Credentials {
     val options: ListProperty<String>
 
     /**
-     * If logs from the running containers should be printed to the Gradle standard output or not
-     */
-    val verbose: Property<Boolean>
-
-    /**
      * Optional login information to perform `docker login` command before any [DockerComposeService] is created
      */
     @get:Nested

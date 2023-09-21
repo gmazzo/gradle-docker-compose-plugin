@@ -30,7 +30,8 @@ abstract class DockerService @Inject constructor(
             val password = parameters.login.password.orNull
 
             exec("login", server,
-                *user?.let { arrayOf("--username", it, "--password-stdin") }.orEmpty()){
+                *user?.let { arrayOf("--username", it, "--password-stdin") }.orEmpty()
+            ) {
                 if (password != null) standardInput = password.byteInputStream()
             }
         }
@@ -44,10 +45,6 @@ abstract class DockerService @Inject constructor(
         executable = parameters.command.get()
         args = parameters.options.get() + command
         action?.execute(this)
-
-        if (parameters.verbose.get()) {
-            logger.info("dockerExec: `{}`", commandLine.joinToString(separator = " "))
-        }
     }
 
     @JvmOverloads

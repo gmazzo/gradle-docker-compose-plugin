@@ -3,8 +3,8 @@ package io.github.gmazzo.docker.compose
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.services.ServiceReference
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Internal
@@ -14,8 +14,8 @@ import org.gradle.api.tasks.TaskAction
 
 abstract class DockerComposeInitTask : DefaultTask(), DockerComposeSource {
 
-    @get:ServiceReference("docker")
-    internal abstract val dockerService: Property<DockerService>
+    @get:Internal
+    abstract val dockerService: Property<DockerService>
 
     @get:Input
     abstract override val projectName: Property<String>
@@ -27,6 +27,15 @@ abstract class DockerComposeInitTask : DefaultTask(), DockerComposeSource {
     @get:Internal
     abstract override val workingDirectory: DirectoryProperty
 
+    @get:Input
+    abstract override val optionsCreate: ListProperty<String>
+
+    @get:Internal
+    abstract override val optionsUp: ListProperty<String>
+
+    @get:Internal
+    abstract override val optionsDown: ListProperty<String>
+
     private val projectDir = project.projectDir
 
     @get:Input
@@ -35,11 +44,11 @@ abstract class DockerComposeInitTask : DefaultTask(), DockerComposeSource {
         get() = workingDirectory.map { it.asFile.toRelativeString(projectDir) }
 
     @get:Internal
-    abstract override val verbose: Property<Boolean>
+    abstract override val showLogs: Property<Boolean>
 
     @TaskAction
     fun initContainers() {
-        dockerService.get().composeExec(this, "create", "--remove-orphans")
+        dockerService.get().composeExec(this, "create", *optionsCreate.get().toTypedArray())
     }
 
 }

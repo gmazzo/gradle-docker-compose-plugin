@@ -63,9 +63,10 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
     override fun run() {
         if (parameters.hasComposeFile) {
             logger.info("Starting containers of Docker service `{}`...", name)
-            docker.composeExec(parameters, "up", "--remove-orphans", "--wait")
+            docker.composeExec(parameters, "up", "--wait",
+                *(parameters.optionsCreate.get() + parameters.optionsUp.get()).toTypedArray())
 
-            if (parameters.verbose.get()) {
+            if (parameters.showLogs.get()) {
                 containersAsSystemProperties.takeUnless { it.isEmpty() }?.entries?.joinToString(
                     prefix = "Containers ports are available trough properties:",
                     transform = { (key, value) -> "\n - $key -> $value" }
@@ -81,7 +82,7 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
     override fun close() {
         if (parameters.hasComposeFile) {
             logger.info("Stopping containers of Docker service `{}`...", name)
-            docker.composeExec(parameters, "down")
+            docker.composeExec(parameters, "down", *parameters.optionsDown.get().toTypedArray())
         }
     }
 

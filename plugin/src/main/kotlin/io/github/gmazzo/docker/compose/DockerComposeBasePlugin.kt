@@ -24,11 +24,16 @@ class DockerComposeBasePlugin @Inject constructor(
         with(extension) {
             // DockerSettings defaults
             command.convention("docker").finalizeValueOnRead()
-            verbose.convention(true).finalizeValueOnRead()
+            options.finalizeValueOnRead()
+            showLogs.convention(true).finalizeValueOnRead()
+            login.server.finalizeValueOnRead()
+            login.username.finalizeValueOnRead()
+            login.password.finalizeValueOnRead()
+
             if (rootExtension != null) {
                 command.convention(rootExtension.command)
-                options.addAll(rootExtension.options)
-                verbose.convention(rootExtension.verbose)
+                options.convention(rootExtension.options)
+                showLogs.convention(rootExtension.showLogs)
                 login.server.convention(rootExtension.login.server)
                 login.username.convention(rootExtension.login.username)
                 login.password.convention(rootExtension.login.password)
@@ -38,8 +43,17 @@ class DockerComposeBasePlugin @Inject constructor(
             projectName.convention(
                 if (rootProject == project) rootProject.name.dockerName
                 else "${rootProject.name.dockerName}-${project.name.dockerName}"
-            )
+            ).finalizeValueOnRead()
             workingDirectory.convention(layout.projectDirectory).finalizeValueOnRead()
+            optionsCreate.apply { add("--remove-orphans") }.finalizeValueOnRead()
+            optionsUp.finalizeValueOnRead()
+            optionsDown.finalizeValueOnRead()
+
+            if (rootExtension != null) {
+                optionsCreate.convention(rootExtension.optionsCreate)
+                optionsUp.convention(rootExtension.optionsUp)
+                optionsDown.convention(rootExtension.optionsDown)
+            }
         }
 
         val dockerService = sharedServices.registerIfAbsent("docker$path", DockerService::class) {
@@ -48,7 +62,6 @@ class DockerComposeBasePlugin @Inject constructor(
             parameters.login.server.set(extension.login.server)
             parameters.login.username.set(extension.login.username)
             parameters.login.password.set(extension.login.password)
-            parameters.verbose.set(extension.verbose)
         }
 
         extension.services.all spec@{
@@ -63,30 +76,39 @@ class DockerComposeBasePlugin @Inject constructor(
                 )
                 .finalizeValueOnRead()
             workingDirectory.convention(extension.workingDirectory).finalizeValueOnRead()
-            verbose.convention(extension.verbose).finalizeValueOnRead()
+            optionsCreate.convention(extension.optionsCreate).finalizeValueOnRead()
+            optionsUp.convention(extension.optionsUp).finalizeValueOnRead()
+            optionsDown.convention(extension.optionsDown).finalizeValueOnRead()
+            showLogs.convention(extension.showLogs).finalizeValueOnRead()
 
             buildService = sharedServices.registerIfAbsent("docker$path:$name", DockerComposeService::class) {
                 parameters params@{
                     this@params.serviceName.set(name)
                     this@params.dockerService.set(dockerService)
-                    this@params.projectName.set(this@spec.projectName)
-                    this@params.composeFile.setFrom(this@spec.composeFile)
-                    this@params.workingDirectory.set(this@spec.workingDirectory)
-                    this@params.verbose.set(this@spec.verbose)
+                    this@params.from(this@spec)
                 }
                 maxParallelUsages.convention(1)
             }
 
-            tasks.register<DockerComposeInitTask>("init${if (name == SourceSet.MAIN_SOURCE_SET_NAME) "" else name.capitalized()}Containers") {
+            tasks.register<DockerComposeInitTask>("init${if (name == SourceSet.MAIN_SOURCE_SET_NAME) "" else name.capitalized()}Containers") task@{
                 group = "Docker"
                 description = "Creates (but does not start) the containers of '$name' source set"
 
-                projectName.set(this@spec.projectName)
-                composeFile.setFrom(this@spec.composeFile)
-                workingDirectory.set(this@spec.workingDirectory)
-                verbose.set(this@spec.verbose)
+                this@task.usesService(dockerService)
+                this@task.dockerService.set(dockerService)
+                this@task.from(this@spec)
             }
         }
+    }
+
+    private fun DockerComposeSource.from(source: DockerComposeSource) {
+        projectName.set(source.projectName)
+        composeFile.setFrom(source.composeFile)
+        workingDirectory.set(source.workingDirectory)
+        optionsCreate.set(source.optionsCreate)
+        optionsUp.set(source.optionsUp)
+        optionsDown.set(source.optionsDown)
+        showLogs.set(source.showLogs)
     }
 
     private val String.dockerName
