@@ -20,7 +20,7 @@ And then add a `docker-compose.yml` (or `.yaml` or `.json`) file under the speci
 
 - `src/main/docker-compose.yml` for the `run` when using the `application` plugin (or `bootRun` when using `org.springframework.boot`)
 - `src/test/docker-compose.yml` for the `test` task (when applying the `java` or `jvm-test-suite` plugins)
-- `src/test/docker-compose.yml` for the `integrationTest` task (created by following [Declare an additional test suite](https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html#sec:declare_an_additional_test_suite) Gradle manual)
+- `src/integrationTest/docker-compose.yml` for the `integrationTest` task (created by following [Declare an additional test suite](https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html#sec:declare_an_additional_test_suite) Gradle manual)
 
 ## Consuming containers from code
 When the service is started, the containers defined are exposed to the underlying JVM process as system properties.
