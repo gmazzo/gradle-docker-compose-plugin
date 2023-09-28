@@ -25,7 +25,7 @@ class DockerComposeBasePlugin @Inject constructor(
             // DockerSettings defaults
             command.convention("docker").finalizeValueOnRead()
             options.finalizeValueOnRead()
-            showLogs.convention(true).finalizeValueOnRead()
+            printLogs.convention(true).finalizeValueOnRead()
             login.server.finalizeValueOnRead()
             login.username.finalizeValueOnRead()
             login.password.finalizeValueOnRead()
@@ -33,7 +33,7 @@ class DockerComposeBasePlugin @Inject constructor(
             if (rootExtension != null) {
                 command.convention(rootExtension.command)
                 options.convention(rootExtension.options)
-                showLogs.convention(rootExtension.showLogs)
+                printLogs.convention(rootExtension.printLogs)
                 login.server.convention(rootExtension.login.server)
                 login.username.convention(rootExtension.login.username)
                 login.password.convention(rootExtension.login.password)
@@ -79,7 +79,7 @@ class DockerComposeBasePlugin @Inject constructor(
             optionsCreate.convention(extension.optionsCreate).finalizeValueOnRead()
             optionsUp.convention(extension.optionsUp).finalizeValueOnRead()
             optionsDown.convention(extension.optionsDown).finalizeValueOnRead()
-            showLogs.convention(extension.showLogs).finalizeValueOnRead()
+            printLogs.convention(extension.printLogs).finalizeValueOnRead()
 
             buildService = sharedServices.registerIfAbsent("docker$path:$name", DockerComposeService::class) {
                 parameters params@{
@@ -108,7 +108,7 @@ class DockerComposeBasePlugin @Inject constructor(
         optionsCreate.set(source.optionsCreate)
         optionsUp.set(source.optionsUp)
         optionsDown.set(source.optionsDown)
-        showLogs.set(source.showLogs)
+        printLogs.set(source.printLogs)
     }
 
     private val String.dockerName
