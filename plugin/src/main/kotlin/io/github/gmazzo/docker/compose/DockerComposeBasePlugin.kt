@@ -72,13 +72,11 @@ class DockerComposeBasePlugin @Inject constructor(
             val baseDir = layout.projectDirectory.dir("src/$name")
 
             projectName.convention(extension.projectName.map { "${it}_${name.dockerName}" }).finalizeValueOnRead()
-            composeFile
-                .from(
+            composeFile(
                     baseDir.file("docker-compose.yml"),
                     baseDir.file("docker-compose.yaml"),
                     baseDir.file("docker-compose.json"),
-                )
-                .finalizeValueOnRead()
+                ).finalizeValueOnRead()
             workingDirectory.convention(extension.workingDirectory).finalizeValueOnRead()
             optionsCreate.convention(extension.optionsCreate).finalizeValueOnRead()
             optionsUp.convention(extension.optionsUp).finalizeValueOnRead()
@@ -105,22 +103,19 @@ class DockerComposeBasePlugin @Inject constructor(
                 this@task.usesService(this@spec.buildService)
                 this@task.dockerComposeService.set(this@spec.buildService)
                 this@task.from(this@spec)
-
-                // these properties are not actually used by task, trying to change them should be an error
-                this@task.optionsUp.disallowChanges()
-                this@task.optionsDown.disallowChanges()
-                this@task.keepContainersRunning.disallowChanges()
-                this@task.printPortMappings.disallowChanges()
-                this@task.printLogs.disallowChanges()
             }
         }
     }
 
-    private fun DockerComposeSource.from(source: DockerComposeSource) {
+    private fun DockerComposeCreateSettings.from(source: DockerComposeCreateSettings) {
         projectName.set(source.projectName)
-        composeFile.setFrom(source.composeFile)
         workingDirectory.set(source.workingDirectory)
+        composeFile.setFrom(source.composeFile)
         optionsCreate.set(source.optionsCreate)
+    }
+
+    private fun DockerComposeSettings.from(source: DockerComposeSettings) {
+        (this as DockerComposeCreateSettings).from(source)
         optionsUp.set(source.optionsUp)
         optionsDown.set(source.optionsDown)
         keepContainersRunning.set(source.keepContainersRunning)

@@ -29,7 +29,8 @@ abstract class DockerService @Inject constructor(
             val user = parameters.login.username.orNull
             val password = parameters.login.password.orNull
 
-            exec("login", server,
+            exec(
+                "login", server,
                 *user?.let { arrayOf("--username", it, "--password-stdin") }.orEmpty()
             ) {
                 if (password != null) standardInput = password.byteInputStream()
@@ -49,16 +50,16 @@ abstract class DockerService @Inject constructor(
 
     @JvmOverloads
     fun composeExec(
-        source: DockerComposeSource,
+        settings: DockerComposeCreateSettings,
         vararg command: String,
         action: Action<in ExecSpec>? = null,
-    ) = source.workingDirectory.get().asFile.let { workingDirectory ->
+    ) = settings.workingDirectory.get().asFile.let { workingDirectory ->
         exec(
             "compose",
             "--project-name",
-            source.projectName.get(),
+            settings.projectName.get(),
             "-f",
-            source.composeFile.singleFileOrThrow.toRelativeString(workingDirectory),
+            settings.composeFile.singleFileOrThrow.toRelativeString(workingDirectory),
             *command,
         ) {
             workingDir = workingDirectory

@@ -8,7 +8,7 @@ import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.process.JavaForkOptions
 
-abstract class DockerComposeSpec : Named, DockerComposeSource {
+abstract class DockerComposeSpec : Named, DockerComposeSettings {
 
     /**
      * Returns the service reference to be used on the [Task.usesService] API

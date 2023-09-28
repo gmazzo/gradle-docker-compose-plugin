@@ -105,10 +105,10 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
         docker.composeExec(parameters, "logs", "--follow")
     }
 
-    private val DockerComposeSource.hasComposeFile
+    private val DockerComposeCreateSettings.hasComposeFile
         get() = !composeFile.asFileTree.isEmpty
 
-    interface Params : BuildServiceParameters, DockerComposeSource {
+    interface Params : BuildServiceParameters, DockerComposeSettings {
 
         val serviceName: Property<String>
 
