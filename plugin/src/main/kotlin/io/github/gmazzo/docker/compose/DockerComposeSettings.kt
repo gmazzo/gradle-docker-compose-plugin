@@ -41,6 +41,6 @@ interface DockerComposeSettings {
     /**
      * If logs from the running containers should be printed to the Gradle standard output or not
      */
-    val showLogs: Property<Boolean>
+    val printLogs: Property<Boolean>
 
 }

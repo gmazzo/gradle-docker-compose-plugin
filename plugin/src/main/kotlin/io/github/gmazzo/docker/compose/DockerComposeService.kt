@@ -66,7 +66,7 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
             docker.composeExec(parameters, "up", "--wait",
                 *(parameters.optionsCreate.get() + parameters.optionsUp.get()).toTypedArray())
 
-            if (parameters.showLogs.get()) {
+            if (parameters.printLogs.get()) {
                 containersAsSystemProperties.takeUnless { it.isEmpty() }?.entries?.joinToString(
                     prefix = "Containers ports are available trough properties:",
                     transform = { (key, value) -> "\n - $key -> $value" }

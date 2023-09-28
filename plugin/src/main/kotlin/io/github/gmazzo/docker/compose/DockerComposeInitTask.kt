@@ -44,7 +44,7 @@ abstract class DockerComposeInitTask : DefaultTask(), DockerComposeSource {
         get() = workingDirectory.map { it.asFile.toRelativeString(projectDir) }
 
     @get:Internal
-    abstract override val showLogs: Property<Boolean>
+    abstract override val printLogs: Property<Boolean>
 
     @TaskAction
     fun initContainers() {
