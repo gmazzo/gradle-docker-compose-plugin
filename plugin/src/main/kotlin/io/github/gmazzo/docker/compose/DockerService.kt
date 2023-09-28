@@ -2,12 +2,12 @@ package io.github.gmazzo.docker.compose
 
 import org.gradle.api.Action
 import org.gradle.api.file.FileCollection
+import org.gradle.api.logging.Logging
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
 import org.gradle.process.ExecOperations
 import org.gradle.process.ExecResult
 import org.gradle.process.ExecSpec
-import org.slf4j.LoggerFactory
 import java.io.File
 import javax.inject.Inject
 
@@ -16,7 +16,7 @@ abstract class DockerService @Inject constructor(
     private val execOperations: ExecOperations,
 ) : BuildService<DockerService.Params>, Runnable {
 
-    private val logger = LoggerFactory.getLogger(DockerService::class.java)
+    private val logger = Logging.getLogger(DockerService::class.java)
 
     init {
         run()
@@ -24,7 +24,7 @@ abstract class DockerService @Inject constructor(
 
     override fun run() {
         parameters.login.server.orNull?.let { server ->
-            logger.info("Performing Docker login to `$server`...")
+            logger.lifecycle("Performing Docker login to `$server`...")
 
             val user = parameters.login.username.orNull
             val password = parameters.login.password.orNull
