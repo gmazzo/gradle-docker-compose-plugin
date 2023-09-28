@@ -29,24 +29,24 @@ For instance, given this `docker-compose.yaml` file
 ```yaml
 services:
   app:
-    image: yeasy/simple-web
+    image: mysql:5.7.43
     ports:
-      - 8080:80
+      - 4409:3306
 ```
 You will find in the following JVM system property:
 ```
  Containers ports of `integrationTest` Docker service:
-┌───────────────────────────────────────┬────────────────┐
-│ JVM System Property                   │ Mapped Port    │
-├───────────────────────────────────────┼────────────────┤
-│ container.integrationTest-app-1.tcp80 │ 127.0.0.1:8081 │
-└───────────────────────────────────────┴────────────────┘
+┌─────────────────────────────────────────┬────────────────┐
+│ JVM System Property                     │ Mapped Port    │
+├─────────────────────────────────────────┼────────────────┤
+│ container.integrationTest-app-1.tcp3306 │ 127.0.0.1:4409 │
+└─────────────────────────────────────────┴────────────────┘
 ```
 
 Structure of the JVM system property:
 ```
- - container.main-app-1.tcp80 -> 0.0.0.0:8080
-             │    │   │ │  │     └ exposed host and port on the host machine
+ - container.main-app-1.tcp3306 -> 0.0.0.0:4409
+             │    │   │ │  │       └ exposed host and port on the host machine
              │    │   │ ├──┼ port
              │    │   │ │  └ number of the port
              │    │   │ └ type of the port
@@ -57,11 +57,11 @@ Structure of the JVM system property:
 ```
 You can consume this by using `System.getProperty`:
 ```kotlin
-val appEndpoint = System.getProperty("container.main-app-1.tcp80")
+val appEndpoint = System.getProperty("container.main-app-1.tcp3306")
 ```
 Or in Spring, by using `@Value` annotation:
 ```kotlin
-@Value("\${container.main-app-1.tcp80}")
+@Value("\${container.main-app-1.tcp3306}")
 private lateinit var appEndpoint: String
 ```
 

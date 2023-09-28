@@ -1,23 +1,29 @@
 package io.github.gmazzo.docker.compose.demo
 
 import org.springframework.beans.factory.InitializingBean
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import java.net.URL
+import javax.sql.DataSource
 
 fun main(args: Array<String>) {
     runApplication<SampleApp>(*args)
 }
 
 @SpringBootApplication
-abstract class SampleApp : InitializingBean {
-
-    @Value("\${container.main-app-1.tcp80}")
-    private lateinit var appEndpoint: String
+abstract class SampleApp(
+    private val dataSource: DataSource
+) : InitializingBean {
 
     override fun afterPropertiesSet() {
-        URL("http://$appEndpoint").openStream().reader().use { it.readText().also(::println) }
+        dataSource.connection.use {
+            println("""
+                
+                *********************************************
+                Database is ${it.metaData.databaseProductName} ${it.metaData.databaseProductVersion}
+                *********************************************
+                
+            """.trimIndent())
+        }
     }
 
 }

@@ -1,5 +1,13 @@
 services:
-  app:
-    image: yeasy/simple-web
+  proxy:
+    image: nginx
     ports:
-      - 127.0.0.1:8081:80
+      - :80
+  db:
+    image: mysql:5.7.43
+    environment:
+      - MYSQL_ROOT_PASSWORD=test
+    ports:
+      - :3306
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password=test --execute \"SHOW DATABASES;\""

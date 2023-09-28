@@ -24,7 +24,7 @@ abstract class DockerService @Inject constructor(
 
     override fun run() {
         parameters.login.server.orNull?.let { server ->
-            logger.lifecycle("Performing Docker login to `$server`...")
+            logger.lifecycle("Performing Docker login to `{}`...", server)
 
             val user = parameters.login.username.orNull
             val password = parameters.login.password.orNull

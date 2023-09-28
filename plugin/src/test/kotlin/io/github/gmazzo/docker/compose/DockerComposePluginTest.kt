@@ -33,11 +33,11 @@ class DockerComposePluginTest {
                     .writeText("""
                         services:
                             app:
-                                image: yeasy/simple-web
+                                image: nginx
                                 ports:
                                   - 127.0.0.1:8080:80
                             other:
-                                image: yeasy/simple-web
+                                image: nginx
                                 ports:
                                   - 127.0.0.1:8090:80
                                   - 127.0.0.1:8091:81
