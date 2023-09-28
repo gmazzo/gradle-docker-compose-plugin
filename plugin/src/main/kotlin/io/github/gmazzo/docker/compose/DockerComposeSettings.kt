@@ -39,6 +39,11 @@ interface DockerComposeSettings {
     val optionsDown: ListProperty<String>
 
     /**
+     * If ports mapping table should be printed to the Gradle standard output when containers are started or not
+     */
+    val printPortMappings: Property<Boolean>
+
+    /**
      * If logs from the running containers should be printed to the Gradle standard output or not
      */
     val printLogs: Property<Boolean>

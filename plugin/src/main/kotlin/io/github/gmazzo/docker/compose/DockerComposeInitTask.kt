@@ -44,6 +44,9 @@ abstract class DockerComposeInitTask : DefaultTask(), DockerComposeSource {
         get() = workingDirectory.map { it.asFile.toRelativeString(projectDir) }
 
     @get:Internal
+    abstract override val printPortMappings: Property<Boolean>
+
+    @get:Internal
     abstract override val printLogs: Property<Boolean>
 
     @TaskAction
