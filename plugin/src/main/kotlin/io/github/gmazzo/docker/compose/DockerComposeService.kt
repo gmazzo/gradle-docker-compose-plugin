@@ -2,10 +2,10 @@ package io.github.gmazzo.docker.compose
 
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import org.gradle.api.logging.Logging
 import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
-import org.slf4j.LoggerFactory
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import java.nio.charset.StandardCharsets
@@ -14,7 +14,7 @@ import kotlin.concurrent.thread
 @Suppress("LeakingThis")
 abstract class DockerComposeService : BuildService<DockerComposeService.Params>, AutoCloseable, Runnable {
 
-    private val logger = LoggerFactory.getLogger(DockerComposeService::class.java)
+    private val logger = Logging.getLogger(DockerComposeService::class.java)
 
     private val name = parameters.serviceName.get()
 
@@ -62,7 +62,7 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
 
     override fun run() {
         if (parameters.hasComposeFile) {
-            logger.info("Starting containers of Docker service `{}`...", name)
+            logger.lifecycle("Starting containers of Docker service `{}`...", name)
             docker.composeExec(
                 parameters, "up", "--wait",
                 *(parameters.optionsCreate.get() + parameters.optionsUp.get()).toTypedArray()
@@ -79,7 +79,7 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
 
     override fun close() {
         if (parameters.hasComposeFile) {
-            logger.info("Stopping containers of Docker service `{}`...", name)
+            logger.lifecycle("Stopping containers of Docker service `{}`...", name)
             docker.composeExec(parameters, "down", *parameters.optionsDown.get().toTypedArray())
         }
     }
@@ -90,7 +90,7 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
         val size1 = (rows.asSequence() + header).maxOf { it.first.length }
         val size2 = (rows.asSequence() + header).maxOf { it.second.length }
 
-        logger.info(rows.joinToString(
+        logger.lifecycle(rows.joinToString(
             prefix = "\n Containers ports of `$name` Docker service:\n" +
             "┌" + "─".repeat(size1 + 2) + "┬"+ "─".repeat(size2 + 2) + "┐\n" +
                     "│ " + header.first + " ".repeat(size1 - header.first.length ) + " │ " + header.second + " ".repeat(size2 - header.second.length ) + " │\n" +
