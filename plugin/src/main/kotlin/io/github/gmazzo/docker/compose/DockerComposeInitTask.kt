@@ -41,12 +41,13 @@ abstract class DockerComposeInitTask : DefaultTask(), DockerComposeSource {
     @get:Internal
     abstract override val optionsDown: ListProperty<String>
 
-    private val projectDir = project.projectDir
-
     @get:Input
     @Suppress("unused")
     internal val workingDirectoryPath
         get() = workingDirectory.map { it.asFile.toRelativeString(projectDir) }
+
+    @get:Internal
+    abstract override val keepContainersRunning: Property<Boolean>
 
     @get:Internal
     abstract override val printPortMappings: Property<Boolean>
@@ -58,6 +59,8 @@ abstract class DockerComposeInitTask : DefaultTask(), DockerComposeSource {
     @get:Optional
     @get:Option(option = "start", description = "Starts the containers, instead of just creating then")
     abstract val start: Property<Boolean>
+
+    private val projectDir = project.projectDir
 
     @TaskAction
     fun initContainers() {

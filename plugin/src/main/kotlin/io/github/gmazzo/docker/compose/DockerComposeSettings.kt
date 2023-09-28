@@ -39,6 +39,11 @@ interface DockerComposeSettings {
     val optionsDown: ListProperty<String>
 
     /**
+     * If containers should not be automatically shutdown after the build is finished or not
+     */
+    val keepContainersRunning: Property<Boolean>
+
+    /**
      * If ports mapping table should be printed to the Gradle standard output when containers are started or not
      */
     val printPortMappings: Property<Boolean>

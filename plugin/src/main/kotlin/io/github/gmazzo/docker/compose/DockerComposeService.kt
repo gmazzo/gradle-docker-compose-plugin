@@ -78,7 +78,7 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
     }
 
     override fun close() {
-        if (parameters.hasComposeFile) {
+        if (!parameters.keepContainersRunning.get() && parameters.hasComposeFile) {
             logger.lifecycle("Stopping containers of Docker service `{}`...", name)
             docker.composeExec(parameters, "down", *parameters.optionsDown.get().toTypedArray())
         }

@@ -25,6 +25,7 @@ class DockerComposeBasePlugin @Inject constructor(
             // DockerSettings defaults
             command.convention("docker").finalizeValueOnRead()
             options.finalizeValueOnRead()
+            keepContainersRunning.convention(false).finalizeValueOnRead()
             printPortMappings.convention(true).finalizeValueOnRead()
             printLogs.convention(true).finalizeValueOnRead()
             login.server.finalizeValueOnRead()
@@ -34,6 +35,7 @@ class DockerComposeBasePlugin @Inject constructor(
             if (rootExtension != null) {
                 command.convention(rootExtension.command)
                 options.convention(rootExtension.options)
+                keepContainersRunning.convention(rootExtension.keepContainersRunning)
                 printPortMappings.convention(rootExtension.printPortMappings)
                 printLogs.convention(rootExtension.printLogs)
                 login.server.convention(rootExtension.login.server)
@@ -81,6 +83,7 @@ class DockerComposeBasePlugin @Inject constructor(
             optionsCreate.convention(extension.optionsCreate).finalizeValueOnRead()
             optionsUp.convention(extension.optionsUp).finalizeValueOnRead()
             optionsDown.convention(extension.optionsDown).finalizeValueOnRead()
+            keepContainersRunning.convention(extension.keepContainersRunning).finalizeValueOnRead()
             printPortMappings.convention(extension.printPortMappings).finalizeValueOnRead()
             printLogs.convention(extension.printLogs).finalizeValueOnRead()
 
@@ -102,6 +105,13 @@ class DockerComposeBasePlugin @Inject constructor(
                 this@task.usesService(this@spec.buildService)
                 this@task.dockerComposeService.set(this@spec.buildService)
                 this@task.from(this@spec)
+
+                // these properties are not actually used by task, trying to change them should be an error
+                this@task.optionsUp.disallowChanges()
+                this@task.optionsDown.disallowChanges()
+                this@task.keepContainersRunning.disallowChanges()
+                this@task.printPortMappings.disallowChanges()
+                this@task.printLogs.disallowChanges()
             }
         }
     }
@@ -113,6 +123,7 @@ class DockerComposeBasePlugin @Inject constructor(
         optionsCreate.set(source.optionsCreate)
         optionsUp.set(source.optionsUp)
         optionsDown.set(source.optionsDown)
+        keepContainersRunning.set(source.keepContainersRunning)
         printPortMappings.set(source.printPortMappings)
         printLogs.set(source.printLogs)
     }
