@@ -108,6 +108,8 @@ For the `main` service it will be `initContainers`, `test` will be `initTestCont
 
 You may run the Gradle build targeting this specific task to "win some time" by creating (but not starting) the containers (downloading their images in the process): `docker compose create` command.
 
+You can pass `--start` to the `initContainers` (or `initTestContainers`, etc...) task to force them to start.
+
 > [!NOTE]
 > Keep in mind there is no way to know if the target task (`run`, `test`, etc...) will be actually run until it reaches the point the `UP-TO-DATE` check is done, just before its about to run. So pre-creating the containers with those init `Task`s may be a waste of resources, but it may save some overall time if actually ends up running. 
 > Choose wisely.
