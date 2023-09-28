@@ -63,18 +63,16 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
     override fun run() {
         if (parameters.hasComposeFile) {
             logger.info("Starting containers of Docker service `{}`...", name)
-            docker.composeExec(parameters, "up", "--wait",
-                *(parameters.optionsCreate.get() + parameters.optionsUp.get()).toTypedArray())
+            docker.composeExec(
+                parameters, "up", "--wait",
+                *(parameters.optionsCreate.get() + parameters.optionsUp.get()).toTypedArray()
+            )
 
+            if (parameters.printPortMappings.get()) {
+                printPortMappings()
+            }
             if (parameters.printLogs.get()) {
-                containersAsSystemProperties.takeUnless { it.isEmpty() }?.entries?.joinToString(
-                    prefix = "Containers ports are available trough properties:",
-                    transform = { (key, value) -> "\n - $key -> $value" }
-                )?.let(logger::info)
-
-                thread(isDaemon = true, name = "DockerCompose log for service `$name`") {
-                    docker.composeExec(parameters, "logs", "--follow")
-                }
+                startLogsThread()
             }
         }
     }
@@ -84,6 +82,27 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
             logger.info("Stopping containers of Docker service `{}`...", name)
             docker.composeExec(parameters, "down", *parameters.optionsDown.get().toTypedArray())
         }
+    }
+
+    private fun printPortMappings() {
+        val header = "JVM System Property" to "Mapped Port"
+        val rows = containersAsSystemProperties.toList()
+        val size1 = (rows.asSequence() + header).maxOf { it.first.length }
+        val size2 = (rows.asSequence() + header).maxOf { it.second.length }
+
+        logger.info(rows.joinToString(
+            prefix = "\n Containers ports of `$name` Docker service:\n" +
+            "┌" + "─".repeat(size1 + 2) + "┬"+ "─".repeat(size2 + 2) + "┐\n" +
+                    "│ " + header.first + " ".repeat(size1 - header.first.length ) + " │ " + header.second + " ".repeat(size2 - header.second.length ) + " │\n" +
+                "├" + "─".repeat(size1 + 2) + "┼"+ "─".repeat(size2 + 2) + "┤\n",
+            transform = { (col1, col2) -> "│ " + col1 + " ".repeat(size1 - col1.length ) + " │ " + col2 + " ".repeat(size2 - col2.length ) + " │\n" },
+            separator = "",
+            postfix = "└" + "─".repeat(size1 + 2) + "┴"+ "─".repeat(size2 + 2) + "┘\n"
+        ))
+    }
+
+    private fun startLogsThread() = thread(isDaemon = true, name = "DockerCompose log for service `$name`") {
+        docker.composeExec(parameters, "logs", "--follow")
     }
 
     private val DockerComposeSource.hasComposeFile

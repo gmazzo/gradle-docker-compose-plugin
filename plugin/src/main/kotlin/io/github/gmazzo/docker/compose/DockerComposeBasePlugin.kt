@@ -25,6 +25,7 @@ class DockerComposeBasePlugin @Inject constructor(
             // DockerSettings defaults
             command.convention("docker").finalizeValueOnRead()
             options.finalizeValueOnRead()
+            printPortMappings.convention(true).finalizeValueOnRead()
             printLogs.convention(true).finalizeValueOnRead()
             login.server.finalizeValueOnRead()
             login.username.finalizeValueOnRead()
@@ -33,6 +34,7 @@ class DockerComposeBasePlugin @Inject constructor(
             if (rootExtension != null) {
                 command.convention(rootExtension.command)
                 options.convention(rootExtension.options)
+                printPortMappings.convention(rootExtension.printPortMappings)
                 printLogs.convention(rootExtension.printLogs)
                 login.server.convention(rootExtension.login.server)
                 login.username.convention(rootExtension.login.username)
@@ -79,6 +81,7 @@ class DockerComposeBasePlugin @Inject constructor(
             optionsCreate.convention(extension.optionsCreate).finalizeValueOnRead()
             optionsUp.convention(extension.optionsUp).finalizeValueOnRead()
             optionsDown.convention(extension.optionsDown).finalizeValueOnRead()
+            printPortMappings.convention(extension.printPortMappings).finalizeValueOnRead()
             printLogs.convention(extension.printLogs).finalizeValueOnRead()
 
             buildService = sharedServices.registerIfAbsent("docker$path:$name", DockerComposeService::class) {
@@ -108,6 +111,7 @@ class DockerComposeBasePlugin @Inject constructor(
         optionsCreate.set(source.optionsCreate)
         optionsUp.set(source.optionsUp)
         optionsDown.set(source.optionsDown)
+        printPortMappings.set(source.printPortMappings)
         printLogs.set(source.printLogs)
     }
 

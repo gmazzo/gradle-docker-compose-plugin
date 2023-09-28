@@ -33,7 +33,17 @@ services:
     ports:
       - 8080:80
 ```
-You will find in the following property:
+You will find in the following JVM system property:
+```
+ Containers ports of `integrationTest` Docker service:
+┌───────────────────────────────────────┬────────────────┐
+│ JVM System Property                   │ Mapped Port    │
+├───────────────────────────────────────┼────────────────┤
+│ container.integrationTest-app-1.tcp80 │ 127.0.0.1:8081 │
+└───────────────────────────────────────┴────────────────┘
+```
+
+Structure of the JVM system property:
 ```
  - container.main-app-1.tcp80 -> 0.0.0.0:8080
              │    │   │ │  │     └ exposed host and port on the host machine
