@@ -99,6 +99,8 @@ class DockerComposeBasePlugin @Inject constructor(
 
                 this@task.usesService(dockerService)
                 this@task.dockerService.set(dockerService)
+                this@task.usesService(this@spec.buildService)
+                this@task.dockerComposeService.set(this@spec.buildService)
                 this@task.from(this@spec)
             }
         }
