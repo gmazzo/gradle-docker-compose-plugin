@@ -14,7 +14,7 @@ import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 
-abstract class DockerComposeInitTask : DefaultTask(), DockerComposeSource {
+abstract class DockerComposeInitTask : DefaultTask(), DockerComposeCreateSettings {
 
     @get:Internal
     abstract val dockerService: Property<DockerService>
@@ -35,25 +35,10 @@ abstract class DockerComposeInitTask : DefaultTask(), DockerComposeSource {
     @get:Input
     abstract override val optionsCreate: ListProperty<String>
 
-    @get:Internal
-    abstract override val optionsUp: ListProperty<String>
-
-    @get:Internal
-    abstract override val optionsDown: ListProperty<String>
-
     @get:Input
     @Suppress("unused")
     internal val workingDirectoryPath
         get() = workingDirectory.map { it.asFile.toRelativeString(projectDir) }
-
-    @get:Internal
-    abstract override val keepContainersRunning: Property<Boolean>
-
-    @get:Internal
-    abstract override val printPortMappings: Property<Boolean>
-
-    @get:Internal
-    abstract override val printLogs: Property<Boolean>
 
     @get:Input
     @get:Optional
