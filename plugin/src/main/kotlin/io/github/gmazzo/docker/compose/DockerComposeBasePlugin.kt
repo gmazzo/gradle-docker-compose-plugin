@@ -9,6 +9,7 @@ import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.registerIfAbsent
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class DockerComposeBasePlugin @Inject constructor(
@@ -28,6 +29,10 @@ class DockerComposeBasePlugin @Inject constructor(
             keepContainersRunning.convention(false).finalizeValueOnRead()
             printPortMappings.convention(true).finalizeValueOnRead()
             printLogs.convention(true).finalizeValueOnRead()
+            waitForTCPPorts.enabled.convention(true).finalizeValueOnRead()
+            waitForTCPPorts.include.finalizeValueOnRead()
+            waitForTCPPorts.exclude.finalizeValueOnRead()
+            waitForTCPPorts.timeout.convention(TimeUnit.MINUTES.toMillis(1).toInt()).finalizeValueOnRead()
             login.server.finalizeValueOnRead()
             login.username.finalizeValueOnRead()
             login.password.finalizeValueOnRead()
@@ -36,6 +41,10 @@ class DockerComposeBasePlugin @Inject constructor(
                 command.convention(rootExtension.command)
                 options.convention(rootExtension.options)
                 keepContainersRunning.convention(rootExtension.keepContainersRunning)
+                waitForTCPPorts.enabled.convention(rootExtension.waitForTCPPorts.enabled)
+                waitForTCPPorts.include.convention(rootExtension.waitForTCPPorts.include)
+                waitForTCPPorts.exclude.convention(rootExtension.waitForTCPPorts.exclude)
+                waitForTCPPorts.timeout.convention(rootExtension.waitForTCPPorts.timeout)
                 printPortMappings.convention(rootExtension.printPortMappings)
                 printLogs.convention(rootExtension.printLogs)
                 login.server.convention(rootExtension.login.server)
@@ -82,6 +91,10 @@ class DockerComposeBasePlugin @Inject constructor(
             optionsUp.convention(extension.optionsUp).finalizeValueOnRead()
             optionsDown.convention(extension.optionsDown).finalizeValueOnRead()
             keepContainersRunning.convention(extension.keepContainersRunning).finalizeValueOnRead()
+            waitForTCPPorts.enabled.convention(extension.waitForTCPPorts.enabled).finalizeValueOnRead()
+            waitForTCPPorts.include.convention(extension.waitForTCPPorts.include).finalizeValueOnRead()
+            waitForTCPPorts.exclude.convention(extension.waitForTCPPorts.exclude).finalizeValueOnRead()
+            waitForTCPPorts.timeout.convention(extension.waitForTCPPorts.timeout).finalizeValueOnRead()
             printPortMappings.convention(extension.printPortMappings).finalizeValueOnRead()
             printLogs.convention(extension.printLogs).finalizeValueOnRead()
 
@@ -119,6 +132,10 @@ class DockerComposeBasePlugin @Inject constructor(
         optionsUp.set(source.optionsUp)
         optionsDown.set(source.optionsDown)
         keepContainersRunning.set(source.keepContainersRunning)
+        waitForTCPPorts.enabled.set(source.waitForTCPPorts.enabled)
+        waitForTCPPorts.include.set(source.waitForTCPPorts.include)
+        waitForTCPPorts.exclude.set(source.waitForTCPPorts.exclude)
+        waitForTCPPorts.timeout.set(source.waitForTCPPorts.timeout)
         printPortMappings.set(source.printPortMappings)
         printLogs.set(source.printLogs)
     }

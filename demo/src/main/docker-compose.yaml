@@ -1,5 +1,9 @@
 services:
-  app:
-    image: yeasy/simple-web
+  db:
+    image: mysql:5.7.43
+    environment:
+      - MYSQL_ROOT_PASSWORD=test
     ports:
-      - 8000:80
+      - :3306
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password=test --execute \"SHOW DATABASES;\""

@@ -1,6 +1,7 @@
 package io.github.gmazzo.docker.compose.demo
 
 import java.net.URL
+import java.sql.DriverManager
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -11,15 +12,30 @@ class SampleTest {
     fun `container properties are exposed`() {
         val props = System.getProperties().filterKeys { (it as? String)?.startsWith("container.") == true }
 
-        assertEquals<Map<Any, Any>>(mapOf("container.integrationTest-app-1.tcp80" to "127.0.0.1:8081"), props)
+        assertEquals(
+            setOf(
+                "container.integrationTest-proxy-1.tcp80",
+                "container.integrationTest-db-1.tcp3306",
+            ), props.keys
+        )
     }
 
     @Test
-    fun `fetch content from a container`() {
-        val url = URL("http://${System.getProperty("container.integrationTest-app-1.tcp80")}")
-        val content = url.openStream().bufferedReader().readText()
+    fun `can connect to db`() {
+        val dbHost = System.getProperty("container.integrationTest-db-1.tcp3306")
 
-        assertTrue(content.startsWith("<!DOCTYPE html>"))
+        DriverManager.registerDriver(com.mysql.cj.jdbc.Driver())
+        DriverManager.getConnection("jdbc:mysql://$dbHost/", "root", "test").use {
+            assertEquals("MySQL", it.metaData.databaseProductName)
+            assertEquals("5.7.43", it.metaData.databaseProductVersion)
+        }
+    }
+
+    @Test
+    fun `can fetch content from a proxy`() {
+        URL("http://${System.getProperty("container.integrationTest-proxy-1.tcp80")}").openStream().use {
+            assertTrue(it.bufferedReader().readText().startsWith("<!DOCTYPE html>"))
+        }
     }
 
 }
