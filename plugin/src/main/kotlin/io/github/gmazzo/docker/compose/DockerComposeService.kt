@@ -66,16 +66,17 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
     val containersAsSystemProperties: Map<String, String>
         get() = buildMap {
             containers.forEach { container ->
-                val containerHost = container.host
                 val containerName = container.name
                     .replaceFirst(parameters.projectName.get(), name)
                     .removePrefix("/")
+
+                put("container.$containerName.host", container.host)
 
                 container.networkSettings.ports.forEach { (name, bindings) ->
                     val (type, port) = name.typeAndPort
 
                     bindings?.firstOrNull()?.let {
-                        put("container.$containerName.$type$port", "$containerHost:${it.hostPort}")
+                        put("container.$containerName.$type$port", it.hostPort.toString())
                     }
                 }
             }
@@ -183,14 +184,14 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
     }
 
     private fun printPortMappings() {
-        val header = "JVM System Property" to "Mapped Port"
+        val header = "JVM System Property" to "Value"
         val rows = containersAsSystemProperties.toList()
         val size1 = (rows.asSequence() + header).maxOf { it.first.length }
         val size2 = (rows.asSequence() + header).maxOf { it.second.length }
 
         logger.lifecycle(
             rows.joinToString(
-                prefix = "\nContainers ports of `$name` Docker service:\n" +
+                prefix = "\nProperties of `$name` Docker service:\n" +
                         "┌" + "─".repeat(size1 + 2) + "┬" + "─".repeat(size2 + 2) + "┐\n" +
                         "│ " + header.first + " ".repeat(size1 - header.first.length) + " │ " + header.second + " ".repeat(
                     size2 - header.second.length
