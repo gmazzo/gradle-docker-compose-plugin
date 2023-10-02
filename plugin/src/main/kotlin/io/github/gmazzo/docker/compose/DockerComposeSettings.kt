@@ -12,7 +12,9 @@ interface DockerComposeSettings : DockerComposeCreateSettings {
     /**
      * Optional options to append to the `docker compose up` command.
      *
-     * For consistency, [optionsCreate] will be propagated to [optionsUp]
+     * For consistency, [optionsCreate] will be propagated to [optionsUp].
+     *
+     * Defaults to `--wait` to assure containers are [healthy](https://docs.docker.com/compose/compose-file/compose-file-v3/#healthcheck) before moving forward with the build
      */
     val optionsUp: ListProperty<String>
 

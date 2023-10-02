@@ -34,6 +34,8 @@ interface DockerComposeCreateSettings {
 
     /**
      * Optional options to append to the `docker compose create` command
+     *
+     * Defaults to `--remove-orphans` to ensure only containers defined in the docker file are kept
      */
     val optionsCreate: ListProperty<String>
 
