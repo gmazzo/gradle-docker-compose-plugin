@@ -6,11 +6,8 @@ import org.gradle.api.logging.Logging
 import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
-import java.io.ByteArrayOutputStream
-import java.io.PrintStream
 import java.net.InetAddress
 import java.net.Socket
-import java.nio.charset.StandardCharsets
 import kotlin.concurrent.thread
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -44,17 +41,15 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
         get() {
             if (!parameters.hasComposeFile) return emptyList()
 
-            val containerIds = with(ByteArrayOutputStream()) out@{
-                docker.composeExec(parameters, "ps", "--all", "--quiet") { standardOutput = PrintStream(this@out) }
-                toString(StandardCharsets.UTF_8)
-            }.lineSequence().filter { it.isNotBlank() }.toList()
+            val containerIds = docker.composeExec(parameters, "ps", "--all", "--quiet")
+                .standardOutput
+                .lineSequence()
+                .filter { it.isNotBlank() }
+                .toList()
 
             if (containerIds.isEmpty()) return emptyList()
 
-            val content = with(ByteArrayOutputStream()) out@{
-                docker.exec("inspect", *containerIds.toTypedArray()) { standardOutput = PrintStream(this@out) }
-                toString(StandardCharsets.UTF_8)
-            }
+            val content = docker.exec("inspect", *containerIds.toTypedArray()).standardOutput
             try {
                 return json.decodeFromString<List<DockerContainer>>(content)
 
@@ -107,26 +102,31 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
     }
 
     private fun startContainers() {
-        val result = runCatching {
-            docker.composeExec(
-                parameters, "up", "--wait",
-                *(parameters.optionsCreate.get() + parameters.optionsUp.get()).toTypedArray()
-            )
-        }
+        val result = docker.composeExec(
+            parameters, "up", "--wait",
+            *(parameters.optionsCreate.get() + parameters.optionsUp.get()).toTypedArray(),
+            failNonZeroExitValue = false
+        )
 
+        // print logs of failed cont
         val failed = containers.asSequence()
             .filter { !it.state.running && it.state.exitCode != 0 }
             .map { it.name.removePrefix("/") }
             .toList()
-
         if (failed.isNotEmpty()) {
-            with(ByteArrayOutputStream()) out@{
-                docker.exec("logs", *failed.toTypedArray()) { standardOutput = this@out }
-                logger.error(toString(StandardCharsets.UTF_8))
-            }
-            throw IllegalStateException("Containers ${failed.joinToString { "`$it`" }} are not running.", result.exceptionOrNull())
+            val logs = docker.exec("logs", *failed.toTypedArray(), failNonZeroExitValue = false).combinedOutput.trim()
+
+            logger.error(logs)
+            logger.error(
+                failed.joinToString(
+                    prefix = "Containers ",
+                    transform = { "`$it`" },
+                    postfix = " are not running."
+                )
+            )
         }
-        result.getOrThrow()
+
+        result.assertNormalExitValue()
     }
 
     private fun waitForTCPPorts() {
