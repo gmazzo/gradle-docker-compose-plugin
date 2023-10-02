@@ -35,19 +35,22 @@ services:
 ```
 You will find in the following JVM system property:
 ```
- Properties of `integrationTest` Docker service:
-┌─────────────────────────────────────────┬───────────┐
-│ JVM System Property                     │ Value     │
-├─────────────────────────────────────────┼───────────┤
-│ container.integrationTest-app-1.host    │ 127.0.0.1 │
-│ container.integrationTest-app-1.tcp3306 │ 4409      │
-└─────────────────────────────────────────┴───────────┘
+Properties of `integrationTest` Docker service:
+┌─────────────────────────────────────────┬─────────────────────────────────────────┬───────────┐
+│ JVM System Property                     │ Environment Variable                    │ Value     │
+├─────────────────────────────────────────┼─────────────────────────────────────────┼───────────┤
+│ container.integrationTest-app-1.host    │ CONTAINER.INTEGRATIONTEST-APP-1.HOST    │ 127.0.0.1 │
+│ container.integrationTest-app-1.tcp80   │ CONTAINER.INTEGRATIONTEST-APP-1.TCP80   │ 8080      │
+│ container.integrationTest-other-1.host  │ CONTAINER.INTEGRATIONTEST-OTHER-1.HOST  │ 127.0.0.1 │
+│ container.integrationTest-other-1.tcp80 │ CONTAINER.INTEGRATIONTEST-OTHER-1.TCP80 │ 8090      │
+│ container.integrationTest-other-1.tcp81 │ CONTAINER.INTEGRATIONTEST-OTHER-1.TCP81 │ 8091      │
+└─────────────────────────────────────────┴─────────────────────────────────────────┴───────────┘
 ```
 
 Structure of the JVM system property:
 ```
- - container.main-app-1.tcp3306 -> 4409
-             │    │   │ │  │       └ exposed port on the host machine
+ - container.main-app-1.tcp80 -> 4409
+             │    │   │ │  │     └ exposed port on the host machine
              │    │   │ ├──┼ port
              │    │   │ │  └ number of the port
              │    │   │ └ type of the port
@@ -59,11 +62,11 @@ Structure of the JVM system property:
 You can consume this by using `System.getProperty`:
 ```kotlin
 val appHost = System.getProperty("container.main-app-1.host")
-val appPort = System.getProperty("container.main-app-1.tcp3306")
+val appPort = System.getProperty("container.main-app-1.tcp80")
 ```
 Or in Spring, by using `@Value` annotation:
 ```kotlin
-@Value("\${container.main-app-1.host}:\${container.main-app-1.tcp3306}")
+@Value("\${container.main-app-1.host}:\${container.main-app-1.tcp80}")
 private lateinit var appEndpoint: String
 ```
 
