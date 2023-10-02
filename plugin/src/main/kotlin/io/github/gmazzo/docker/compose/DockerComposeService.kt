@@ -77,6 +77,9 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
             }
         }
 
+    val containersAsEnvironmentVariables: Map<String, String>
+        get() = containersAsSystemProperties.mapKeys { (key) -> key.uppercase() }
+
     override fun run() {
         if (parameters.hasComposeFile) {
             logger.lifecycle("Starting containers of Docker service `{}`...", name)
@@ -184,26 +187,25 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
     }
 
     private fun printPortMappings() {
-        val header = "JVM System Property" to "Value"
+        val header1 = "JVM System Property"
+        val header2 = "Environment Variable"
+        val header3 = "Value"
         val rows = containersAsSystemProperties.toList()
-        val size1 = (rows.asSequence() + header).maxOf { it.first.length }
-        val size2 = (rows.asSequence() + header).maxOf { it.second.length }
+        val size1 = (rows.asSequence().map { it.first } + header1).maxOf { it.length }
+        val size2 = (rows.asSequence().map { it.first } + header2).maxOf { it.length }
+        val size3 = (rows.asSequence().map { it.second } + header3).maxOf { it.length }
 
         logger.lifecycle(
             rows.joinToString(
                 prefix = "\nProperties of `$name` Docker service:\n" +
-                        "┌" + "─".repeat(size1 + 2) + "┬" + "─".repeat(size2 + 2) + "┐\n" +
-                        "│ " + header.first + " ".repeat(size1 - header.first.length) + " │ " + header.second + " ".repeat(
-                    size2 - header.second.length
-                ) + " │\n" +
-                        "├" + "─".repeat(size1 + 2) + "┼" + "─".repeat(size2 + 2) + "┤\n",
-                transform = { (col1, col2) ->
-                    "│ " + col1 + " ".repeat(size1 - col1.length) + " │ " + col2 + " ".repeat(
-                        size2 - col2.length
-                    ) + " │\n"
+                        "┌" + "─".repeat(size1 + 2) + "┬" + "─".repeat(size2 + 2) + "┬" + "─".repeat(size3 + 2) + "┐\n" +
+                        "│ " + header1 + " ".repeat(size1 - header1.length) + " │ " + header2 + " ".repeat(size2 - header2.length) + " │ " + header3 + " ".repeat(size3 - header3.length) + " │\n" +
+                        "├" + "─".repeat(size1 + 2) + "┼" + "─".repeat(size2 + 2) + "┼" + "─".repeat(size3 + 2) + "┤\n",
+                transform = { (name, value) ->
+                    "│ " + name + " ".repeat(size1 - name.length) + " │ " + name.uppercase() + " ".repeat(size2 - name.length) + " │ " + value + " ".repeat(size3 - value.length) + " │\n"
                 },
                 separator = "",
-                postfix = "└" + "─".repeat(size1 + 2) + "┴" + "─".repeat(size2 + 2) + "┘\n"
+                postfix = "└" + "─".repeat(size1 + 2) + "┴" + "─".repeat(size2 + 2) + "┴" + "─".repeat(size3 + 2) + "┘\n"
             )
         )
     }
