@@ -106,7 +106,7 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
 
     private fun startContainers() {
         val result = docker.composeExec(
-            parameters, "up", "--wait",
+            parameters, "up",
             *(parameters.optionsCreate.get() + parameters.optionsUp.get()).toTypedArray(),
             failNonZeroExitValue = false
         )

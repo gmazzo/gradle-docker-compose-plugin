@@ -35,7 +35,7 @@ class DockerComposeBasePlugin @Inject constructor(
 
             // DockerComposeSettings shared defaults
             optionsCreate.apply { add("--remove-orphans") }.finalizeValueOnRead()
-            optionsUp.finalizeValueOnRead()
+            optionsUp.apply { add("--wait") }.finalizeValueOnRead()
             optionsDown.finalizeValueOnRead()
             keepContainersRunning.convention(false).finalizeValueOnRead()
             waitForTCPPorts.enabled.convention(true).finalizeValueOnRead()
