@@ -42,14 +42,14 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
             if (!parameters.hasComposeFile) return emptyList()
 
             val containerIds = docker.composeExec(parameters, "ps", "--all", "--quiet")
-                .standardOutput
+                .output
                 .lineSequence()
                 .filter { it.isNotBlank() }
                 .toList()
 
             if (containerIds.isEmpty()) return emptyList()
 
-            val content = docker.exec("inspect", *containerIds.toTypedArray()).standardOutput
+            val content = docker.exec("inspect", *containerIds.toTypedArray()).output
             try {
                 return json.decodeFromString<List<DockerContainer>>(content)
 
@@ -118,7 +118,7 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
             .map { it.name.removePrefix("/") }
             .toList()
         if (failed.isNotEmpty()) {
-            val logs = docker.exec("logs", *failed.toTypedArray(), failNonZeroExitValue = false).combinedOutput.trim()
+            val logs = docker.exec("logs", *failed.toTypedArray(), failNonZeroExitValue = false).output
 
             logger.error(logs)
             logger.error(

@@ -46,25 +46,23 @@ abstract class DockerService @Inject constructor(
     ): ExecResult {
         lateinit var commands: List<String>
         val output = ByteArrayOutputStream()
-        val error = ByteArrayOutputStream()
-        val both = ByteArrayOutputStream()
+        val outputAndError = ByteArrayOutputStream()
 
         val result = execOperations.exec {
             executable = parameters.command.get()
             args = parameters.options.get() + command
             if (input != null) standardInput = input
             if (workingDirectory != null) workingDir = workingDirectory
-            standardOutput = TeeOutputStream(output, both)
-            errorOutput = TeeOutputStream(error, both)
+            standardOutput = TeeOutputStream(output, outputAndError)
+            errorOutput = outputAndError
             isIgnoreExitValue = true
             commands = commandLine
         }
         return ExecResult(
             command = commands,
             exitValue = result.exitValue,
-            standardOutput = output,
-            standardError = error,
-            combinedOutput = both,
+            output = output,
+            outputAndError = outputAndError,
         ).also {
             if (failNonZeroExitValue) {
                 it.assertNormalExitValue()
@@ -112,25 +110,19 @@ abstract class DockerService @Inject constructor(
     class ExecResult(
         val command: List<String>,
         val exitValue: Int,
-        standardOutput: ByteArrayOutputStream,
-        standardError: ByteArrayOutputStream,
-        combinedOutput: ByteArrayOutputStream,
+        output: ByteArrayOutputStream,
+        outputAndError: ByteArrayOutputStream,
     ) {
 
-        val standardOutput by lazy { standardOutput.content }
+        val output by lazy { output.toString(StandardCharsets.UTF_8).trim() }
 
-        val standardError by lazy { standardError.content }
-
-        val combinedOutput by lazy { combinedOutput.content }
-
-        private val ByteArrayOutputStream.content
-            get() = toString(StandardCharsets.UTF_8).trim()
+        val outputAndError by lazy { outputAndError.toString(StandardCharsets.UTF_8).trim() }
 
         fun assertNormalExitValue() = check(exitValue == 0) {
             command.joinToString(
                 prefix = "Command `",
                 separator = " ",
-                postfix = "` finished with non-zero exit value $exitValue:\n$combinedOutput"
+                postfix = "` finished with non-zero exit value $exitValue:\n$outputAndError"
             )
         }
 
