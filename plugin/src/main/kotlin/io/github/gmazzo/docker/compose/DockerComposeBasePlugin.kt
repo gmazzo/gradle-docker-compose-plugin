@@ -93,7 +93,16 @@ class DockerComposeBasePlugin @Inject constructor(
                 parameters params@{
                     this@params.serviceName.set(name)
                     this@params.dockerService.set(dockerService)
-                    this@params.from(this@spec)
+                    this@params.setFrom(this@spec)
+                    this@params.optionsUp.set(this@spec.optionsUp)
+                    this@params.optionsDown.set(this@spec.optionsDown)
+                    this@params.keepContainersRunning.set(this@spec.keepContainersRunning)
+                    this@params.waitForTCPPorts.enabled.set(this@spec.waitForTCPPorts.enabled)
+                    this@params.waitForTCPPorts.include.set(this@spec.waitForTCPPorts.include)
+                    this@params.waitForTCPPorts.exclude.set(this@spec.waitForTCPPorts.exclude)
+                    this@params.waitForTCPPorts.timeout.set(this@spec.waitForTCPPorts.timeout)
+                    this@params.printPortMappings.set(this@spec.printPortMappings)
+                    this@params.printLogs.set(this@spec.printLogs)
                 }
                 maxParallelUsages.convention(1)
             }
@@ -106,29 +115,16 @@ class DockerComposeBasePlugin @Inject constructor(
                 this@task.dockerService.set(dockerService)
                 this@task.usesService(this@spec.buildService)
                 this@task.dockerComposeService.set(this@spec.buildService)
-                this@task.from(this@spec)
+                this@task.setFrom(this@spec)
             }
         }
     }
 
-    private fun DockerComposeCreateSettings.from(source: DockerComposeCreateSettings) {
+    private fun DockerComposeCreateSettings.setFrom(source: DockerComposeCreateSettings) {
         projectName.set(source.projectName)
         workingDirectory.set(source.workingDirectory)
         composeFile.setFrom(source.composeFile)
         optionsCreate.set(source.optionsCreate)
-    }
-
-    private fun DockerComposeSettings.from(source: DockerComposeSettings) {
-        (this as DockerComposeCreateSettings).from(source)
-        optionsUp.set(source.optionsUp)
-        optionsDown.set(source.optionsDown)
-        keepContainersRunning.set(source.keepContainersRunning)
-        waitForTCPPorts.enabled.set(source.waitForTCPPorts.enabled)
-        waitForTCPPorts.include.set(source.waitForTCPPorts.include)
-        waitForTCPPorts.exclude.set(source.waitForTCPPorts.exclude)
-        waitForTCPPorts.timeout.set(source.waitForTCPPorts.timeout)
-        printPortMappings.set(source.printPortMappings)
-        printLogs.set(source.printLogs)
     }
 
     private val Project.dockerName
