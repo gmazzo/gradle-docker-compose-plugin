@@ -9,6 +9,7 @@ kotlin-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializat
 mysql-connector = { module = "mysql:mysql-connector-java", version = "8.0.33" }
 spring-starter-jdbc = { module = "org.springframework.boot:spring-boot-starter-jdbc", version.ref = "spring" }
 spring-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring" }
+spring-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

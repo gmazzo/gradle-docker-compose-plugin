@@ -64,6 +64,7 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
                 val containerName = container.name
                     .replaceFirst(parameters.projectName.get(), name)
                     .removePrefix("/")
+                    .removeSuffix("-1")
 
                 put("container.$containerName.host", container.host)
 
@@ -78,7 +79,7 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
         }
 
     val containersAsEnvironmentVariables: Map<String, String>
-        get() = containersAsSystemProperties.mapKeys { (key) -> key.uppercase() }
+        get() = containersAsSystemProperties.mapKeys { (key) -> key.envVarName }
 
     override fun run() {
         if (parameters.hasComposeFile) {
@@ -202,7 +203,7 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
                         "│ " + header1 + " ".repeat(size1 - header1.length) + " │ " + header2 + " ".repeat(size2 - header2.length) + " │ " + header3 + " ".repeat(size3 - header3.length) + " │\n" +
                         "├" + "─".repeat(size1 + 2) + "┼" + "─".repeat(size2 + 2) + "┼" + "─".repeat(size3 + 2) + "┤\n",
                 transform = { (name, value) ->
-                    "│ " + name + " ".repeat(size1 - name.length) + " │ " + name.uppercase() + " ".repeat(size2 - name.length) + " │ " + value + " ".repeat(size3 - value.length) + " │\n"
+                    "│ " + name + " ".repeat(size1 - name.length) + " │ " + name.envVarName + " ".repeat(size2 - name.length) + " │ " + value + " ".repeat(size3 - value.length) + " │\n"
                 },
                 separator = "",
                 postfix = "└" + "─".repeat(size1 + 2) + "┴" + "─".repeat(size2 + 2) + "┴" + "─".repeat(size3 + 2) + "┘\n"
@@ -216,6 +217,11 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
 
     private val DockerComposeCreateSettings.hasComposeFile: Boolean
         get() = !composeFile.asFileTree.isEmpty
+
+    private val String.envVarName
+        get() = replace("(\\p{javaLowerCase}+)|(\\W+)".toRegex()) { m ->
+            m.groups[1]?.value?.uppercase() ?: "_".repeat(m.groupValues[2].length)
+        }
 
     private val String.typeAndPort: Pair<String, Int>
         get() = checkNotNull("(\\d+)/(.*)".toRegex().matchEntire(this)) {
