@@ -71,14 +71,22 @@ class DockerComposePluginTest {
             assertEquals(emptyMap(), test.buildService.get().containersAsSystemProperties)
             assertEquals(
                 mapOf(
-                    "container.integrationTest-app-1.host" to "127.0.0.1",
-                    "container.integrationTest-app-1.tcp80" to "8080",
-                    "container.integrationTest-other-1.host" to "127.0.0.1",
-                    "container.integrationTest-other-1.tcp80" to "8090",
-                    "container.integrationTest-other-1.tcp81" to "8091",
+                    "container.integrationTest-app.host" to "127.0.0.1",
+                    "container.integrationTest-app.tcp80" to "8080",
+                    "container.integrationTest-other.host" to "127.0.0.1",
+                    "container.integrationTest-other.tcp80" to "8090",
+                    "container.integrationTest-other.tcp81" to "8091",
                 ), integrationTest.buildService.get().containersAsSystemProperties
             )
-
+            assertEquals(
+                mapOf(
+                    "CONTAINER_INTEGRATIONTEST_APP_HOST" to "127.0.0.1",
+                    "CONTAINER_INTEGRATIONTEST_APP_TCP80" to "8080",
+                    "CONTAINER_INTEGRATIONTEST_OTHER_HOST" to "127.0.0.1",
+                    "CONTAINER_INTEGRATIONTEST_OTHER_TCP80" to "8090",
+                    "CONTAINER_INTEGRATIONTEST_OTHER_TCP81" to "8091",
+                ), integrationTest.buildService.get().containersAsEnvironmentVariables
+            )
         } finally {
             services.configureEach {
                 runCatching { buildService.get().close() }

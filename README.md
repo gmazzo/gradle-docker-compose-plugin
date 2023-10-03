@@ -29,44 +29,56 @@ For instance, given this `docker-compose.yaml` file
 ```yaml
 services:
   app:
-    image: mysql:5.7.43
+    image: nginx
     ports:
-      - 4409:3306
+      - 127.0.0.1:8080:80
+  db:
+    image: mysql:5.7.43
+    deploy:
+        replicas: 3
+    ports:
+      - :3306
 ```
-You will find in the following JVM system property:
+You will find in the following JVM system properties and environment variables:
 ```
 Properties of `integrationTest` Docker service:
-┌─────────────────────────────────────────┬─────────────────────────────────────────┬───────────┐
-│ JVM System Property                     │ Environment Variable                    │ Value     │
-├─────────────────────────────────────────┼─────────────────────────────────────────┼───────────┤
-│ container.integrationTest-app-1.host    │ CONTAINER.INTEGRATIONTEST-APP-1.HOST    │ 127.0.0.1 │
-│ container.integrationTest-app-1.tcp80   │ CONTAINER.INTEGRATIONTEST-APP-1.TCP80   │ 8080      │
-│ container.integrationTest-other-1.host  │ CONTAINER.INTEGRATIONTEST-OTHER-1.HOST  │ 127.0.0.1 │
-│ container.integrationTest-other-1.tcp80 │ CONTAINER.INTEGRATIONTEST-OTHER-1.TCP80 │ 8090      │
-│ container.integrationTest-other-1.tcp81 │ CONTAINER.INTEGRATIONTEST-OTHER-1.TCP81 │ 8091      │
-└─────────────────────────────────────────┴─────────────────────────────────────────┴───────────┘
+┌────────────────────────────────────────┬────────────────────────────────────────┬───────────┐
+│ JVM System Property                    │ Environment Variable                   │ Value     │
+├────────────────────────────────────────┼────────────────────────────────────────┼───────────┤
+│ container.integrationTest-app.host     │ CONTAINER_INTEGRATIONTEST_APP_HOST     │ 127.0.0.1 │
+│ container.integrationTest-app.tcp80    │ CONTAINER_INTEGRATIONTEST_APP_TCP80    │ 8080      │
+│ container.integrationTest-db.host      │ CONTAINER_INTEGRATIONTEST_DB_HOST      │ 127.0.0.1 │
+│ container.integrationTest-db.tcp3306   │ CONTAINER_INTEGRATIONTEST_DB_TCP3306   │ 58218     │
+│ container.integrationTest-db-2.host    │ CONTAINER_INTEGRATIONTEST_DB_2_HOST    │ 127.0.0.1 │
+│ container.integrationTest-db-2.tcp3306 │ CONTAINER_INTEGRATIONTEST_DB_2_TCP3306 │ 58217     │
+│ container.integrationTest-db-3.host    │ CONTAINER_INTEGRATIONTEST_DB_3_HOST    │ 127.0.0.1 │
+│ container.integrationTest-db-3.tcp3306 │ CONTAINER_INTEGRATIONTEST_DB_3_TCP3306 │ 58216     │
+└────────────────────────────────────────┴────────────────────────────────────────┴───────────┘
 ```
 
 Structure of the JVM system property:
 ```
- - container.main-app-1.tcp80 -> 4409
+ - container.main-app-2.tcp80 -> 4409
              │    │   │ │  │     └ exposed port on the host machine
              │    │   │ ├──┼ port
              │    │   │ │  └ number of the port
              │    │   │ └ type of the port
              ├────┼───┼ container name
-             │    │   └ id of the replica
+             │    │   └ optional: id of the replica in case of more than 1
              │    └ name of the service defined in the compose file
              └ name of the source set
 ```
 You can consume this by using `System.getProperty`:
 ```kotlin
-val appHost = System.getProperty("container.main-app-1.host")
-val appPort = System.getProperty("container.main-app-1.tcp80")
+val appHost = System.getProperty("container.main-app.host")
+val appPort = System.getProperty("container.main-app.tcp80")
+// or
+val `CONTAINER_MAIN_APP_HOST` by System.getenv()
+val `CONTAINER_MAIN_APP_TCP80` by System.getenv()
 ```
 Or in Spring, by using `@Value` annotation:
 ```kotlin
-@Value("\${container.main-app-1.host}:\${container.main-app-1.tcp80}")
+@Value("\${container.main-app.host}:\${container.main-app.tcp80}")
 private lateinit var appEndpoint: String
 ```
 
