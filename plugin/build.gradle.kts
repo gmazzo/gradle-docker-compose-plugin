@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.samWithReceiver)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.gradle.pluginPublish)
+    jacoco
 }
 
 group = "io.github.gmazzo.docker.compose"
@@ -53,6 +54,14 @@ gradlePlugin {
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
     workingDir(provider { temporaryDir })
+}
+
+tasks.withType<JacocoReport>().configureEach {
+    reports.xml.required = true
+}
+
+tasks.check {
+    dependsOn(tasks.jacocoTestReport)
 }
 
 tasks.publish {

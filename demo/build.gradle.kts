@@ -5,6 +5,7 @@ plugins {
     id("io.github.gmazzo.docker.compose")
     application
     alias(libs.plugins.spring.boot)
+    jacoco
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)

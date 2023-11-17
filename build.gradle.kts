@@ -14,3 +14,9 @@ tasks {
         it.configure { dependsOn(pluginBuild.task(":$name")) }
     }
 }
+
+allprojects {
+    tasks.withType<JacocoReport>().configureEach {
+        reports.xml.required = true
+    }
+}
