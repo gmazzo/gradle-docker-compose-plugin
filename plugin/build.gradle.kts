@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.samWithReceiver)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.gradle.pluginPublish)
+    alias(libs.plugins.publicationsReport)
     jacoco
 }
 
