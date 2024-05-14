@@ -20,6 +20,7 @@ runs:
       uses: gradle/actions/setup-gradle@v3
       with:
         cache-encryption-key: ${{ inputs.gradle-encryption-key }}
+        cache-read-only: false
     - name: Print Setup
       shell: bash
       run: |
