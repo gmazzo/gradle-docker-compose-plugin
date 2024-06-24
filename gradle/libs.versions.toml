@@ -1,6 +1,6 @@
 [versions]
 kotlin = "2.0.0"
-spring = "3.3.0"
+spring = "3.3.1"
 
 [libraries]
 kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.6.0" }
