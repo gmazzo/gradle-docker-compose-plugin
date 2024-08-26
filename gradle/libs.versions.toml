@@ -3,7 +3,7 @@ kotlin = "2.0.10"
 spring = "3.3.2"
 
 [libraries]
-kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.6.0" }
+kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.6.1" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.7.1" }
 mysql-connector = { module = "mysql:mysql-connector-java", version = "8.0.33" }
