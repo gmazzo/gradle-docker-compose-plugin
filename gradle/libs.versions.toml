@@ -5,7 +5,7 @@ spring = "3.3.3"
 [libraries]
 kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.6.1" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
-kotlin-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.7.1" }
+kotlin-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.7.2" }
 mysql-connector = { module = "mysql:mysql-connector-java", version = "8.0.33" }
 spring-starter-jdbc = { module = "org.springframework.boot:spring-boot-starter-jdbc", version.ref = "spring" }
 spring-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring" }
