@@ -1,14 +1,14 @@
 package io.github.gmazzo.docker.compose
 
-import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import java.time.Instant
 
 @Serializable
 data class DockerContainer(
     @SerialName("Id") val id: String,
     @SerialName("Name") val name: String,
-    @SerialName("Created") val created: Instant,
+    @Serializable(with = InstantSerializer::class) @SerialName("Created") val created: Instant,
     @SerialName("Path") val path: String,
     @SerialName("Args") val args: List<String>,
     @SerialName("State") val state: State,
@@ -27,8 +27,8 @@ data class DockerContainer(
         @SerialName("Pid") val pid: Int,
         @SerialName("ExitCode") val exitCode: Int,
         @SerialName("Error") val error: String?,
-        @SerialName("StartedAt") val startedAt: Instant?,
-        @SerialName("FinishedAt") val finishedAt: Instant?,
+        @Serializable(with = InstantSerializer::class) @SerialName("StartedAt") val startedAt: Instant?,
+        @Serializable(with = InstantSerializer::class) @SerialName("FinishedAt") val finishedAt: Instant?,
     )
 
     @Serializable
