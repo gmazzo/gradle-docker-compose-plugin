@@ -24,7 +24,6 @@ samWithReceiver.annotation(HasImplicitReceiver::class.java.name)
 dependencies {
     compileOnly(gradleKotlinDsl())
 
-    implementation(libs.kotlin.datetime)
     implementation(libs.kotlin.serialization.json)
 
     testImplementation(gradleKotlinDsl())
