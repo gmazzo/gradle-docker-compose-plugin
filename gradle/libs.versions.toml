@@ -1,6 +1,6 @@
 [versions]
 kotlin = "2.0.20"
-spring = "3.3.3"
+spring = "3.3.4"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
