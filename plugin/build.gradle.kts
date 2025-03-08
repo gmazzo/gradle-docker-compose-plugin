@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.gradle.pluginPublish)
     alias(libs.plugins.publicationsReport)
+    signing
     jacoco
 }
 
@@ -16,9 +17,7 @@ version = providers
     .standardOutput.asText.get().trim().removePrefix("v")
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(11))
-
 kotlin.compilerOptions.freeCompilerArgs.add("-Xjvm-default=all")
-
 samWithReceiver.annotation(HasImplicitReceiver::class.java.name)
 
 dependencies {
@@ -49,6 +48,15 @@ gradlePlugin {
         description = "Spawns Docker Compose environments for main code and test suites as a Gradle's Shared Build Service"
         tags.addAll("docker", "docker-compose", "build-service", "shared-build-service")
     }
+}
+
+signing {
+    val signingKey: String? by project
+    val signingPassword: String? by project
+
+    useInMemoryPgpKeys(signingKey, signingPassword)
+    publishing.publications.configureEach(::sign)
+    tasks.withType<Sign>().configureEach { enabled = signingKey != null }
 }
 
 tasks.withType<Test>().configureEach {
