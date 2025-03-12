@@ -11,9 +11,12 @@ spring-starter-web = { module = "org.springframework.boot:spring-boot-starter-we
 spring-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring" }
 
 [plugins]
+axion-release = { id = "pl.allegro.tech.build.axion-release", version = "1.18.18" }
+dokka = { id = "org.jetbrains.dokka-javadoc", version = "2.0.0" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-samWithReceiver = { id = "org.jetbrains.kotlin.plugin.sam.with.receiver", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 gradle-pluginPublish = { id = "com.gradle.plugin-publish", version = "1.3.1" }
 spring-boot = { id = "org.springframework.boot", version.ref = "spring" }
-publicationsReport = { id = "io.github.gmazzo.publications.report", version = "1.3.0" }
+mavenPublish = { id = "com.vanniktech.maven.publish", version = "0.31.0" }
+publicationsReport = { id = "io.github.gmazzo.publications.report", version = "1.3.3" }
