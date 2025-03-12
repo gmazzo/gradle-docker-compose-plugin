@@ -4,17 +4,17 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.samWithReceiver)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.axion.release)
+    alias(libs.plugins.mavenPublish)
     alias(libs.plugins.gradle.pluginPublish)
     alias(libs.plugins.publicationsReport)
-    signing
     jacoco
 }
 
 group = "io.github.gmazzo.docker.compose"
-description = "Docker Compose Gradle Plugin"
-version = providers
-    .exec { commandLine("git", "describe", "--tags", "--always") }
-    .standardOutput.asText.get().trim().removePrefix("v")
+description = "Spawns Docker Compose environments for main code and test suites as a Gradle's Shared Build Service"
+version = scmVersion.version
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(11))
 kotlin.compilerOptions.freeCompilerArgs.add("-Xjvm-default=all")
@@ -29,9 +29,13 @@ dependencies {
     testImplementation(libs.kotlin.test)
 }
 
+val originUrl = providers
+    .exec { commandLine("git", "remote", "get-url", "origin") }
+    .standardOutput.asText.map { it.trim() }
+
 gradlePlugin {
-    website.set("https://github.com/gmazzo/gradle-docker-compose-plugin")
-    vcsUrl.set("https://github.com/gmazzo/gradle-docker-compose-plugin")
+    website = originUrl
+    vcsUrl = originUrl
 
     plugins.create("dockerComposeBase") {
         id = "io.github.gmazzo.docker.compose.base"
@@ -45,18 +49,40 @@ gradlePlugin {
         id = "io.github.gmazzo.docker.compose"
         displayName = name
         implementationClass = "io.github.gmazzo.docker.compose.DockerComposePlugin"
-        description = "Spawns Docker Compose environments for main code and test suites as a Gradle's Shared Build Service"
+        description = project.description
         tags.addAll("docker", "docker-compose", "build-service", "shared-build-service")
     }
 }
 
-signing {
-    val signingKey: String? by project
-    val signingPassword: String? by project
+mavenPublishing {
+    publishToMavenCentral("CENTRAL_PORTAL", automaticRelease = true)
 
-    useInMemoryPgpKeys(signingKey, signingPassword)
-    sign(publishing.publications)
-    isRequired = signingKey != null || providers.environmentVariable("GRADLE_PUBLISH_KEY").isPresent
+    pom {
+        name = "${rootProject.name}-${project.name}"
+        description = provider { project.description }
+        url = originUrl
+
+        licenses {
+            license {
+                name = "MIT License"
+                url = "https://opensource.org/license/mit/"
+            }
+        }
+
+        developers {
+            developer {
+                id = "gmazzo"
+                name = id
+                email = "gmazzo65@gmail.com"
+            }
+        }
+
+        scm {
+            connection = originUrl
+            developerConnection = originUrl
+            url = originUrl
+        }
+    }
 }
 
 tasks.withType<Test>().configureEach {
@@ -70,6 +96,20 @@ tasks.withType<JacocoReport>().configureEach {
 
 tasks.check {
     dependsOn(tasks.jacocoTestReport)
+}
+
+afterEvaluate {
+    tasks.named<Jar>("javadocJar") {
+        from(tasks.dokkaGeneratePublicationJavadoc)
+    }
+}
+
+tasks.withType<PublishToMavenRepository>().configureEach {
+    mustRunAfter(tasks.publishPlugins)
+}
+
+tasks.publishPlugins {
+    enabled = "$version".matches("\\d+(\\.\\d+)+".toRegex())
 }
 
 tasks.publish {

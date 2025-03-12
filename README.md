@@ -1,6 +1,7 @@
 ![GitHub](https://img.shields.io/github/license/gmazzo/gradle-docker-compose-plugin)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.gmazzo.docker.compose/io.github.gmazzo.docker.compose.gradle.plugin)](https://central.sonatype.com/artifact/io.github.gmazzo.docker.compose/io.github.gmazzo.docker.compose.gradle.plugin)
 [![Gradle Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/io.github.gmazzo.docker.compose)](https://plugins.gradle.org/plugin/io.github.gmazzo.docker.compose)
-[![Build Status](https://github.com/gmazzo/gradle-docker-compose-plugin/actions/workflows/build.yaml/badge.svg)](https://github.com/gmazzo/gradle-docker-compose-plugin/actions/workflows/build.yaml)
+[![Build Status](https://github.com/gmazzo/gradle-docker-compose-plugin/actions/workflows/ci-cd.yaml/badge.svg)](https://github.com/gmazzo/gradle-docker-compose-plugin/actions/workflows/ci-cd.yaml)
 [![Coverage](https://codecov.io/gh/gmazzo/gradle-docker-compose-plugin/branch/main/graph/badge.svg?token=ExYkP1Q9oE)](https://codecov.io/gh/gmazzo/gradle-docker-compose-plugin)
 [![Users](https://img.shields.io/badge/users_by-Sourcegraph-purple)](https://sourcegraph.com/search?q=content:io.github.gmazzo.docker.compose+-repo:github.com/gmazzo/gradle-docker-compose-plugin)
 
