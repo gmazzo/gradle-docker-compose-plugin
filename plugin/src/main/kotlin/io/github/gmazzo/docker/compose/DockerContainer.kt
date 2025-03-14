@@ -1,8 +1,8 @@
 package io.github.gmazzo.docker.compose
 
+import java.time.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.time.Instant
 
 @Serializable
 data class DockerContainer(

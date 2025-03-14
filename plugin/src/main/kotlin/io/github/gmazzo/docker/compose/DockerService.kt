@@ -1,15 +1,15 @@
 package io.github.gmazzo.docker.compose
 
-import org.gradle.api.file.FileCollection
-import org.gradle.api.logging.Logging
-import org.gradle.api.services.BuildService
-import org.gradle.api.services.BuildServiceParameters
-import org.gradle.process.ExecOperations
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
 import javax.inject.Inject
+import org.gradle.api.file.FileCollection
+import org.gradle.api.logging.Logging
+import org.gradle.api.services.BuildService
+import org.gradle.api.services.BuildServiceParameters
+import org.gradle.process.ExecOperations
 
 @Suppress("LeakingThis")
 abstract class DockerService @Inject constructor(

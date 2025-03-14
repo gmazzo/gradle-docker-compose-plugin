@@ -1,5 +1,6 @@
 package io.github.gmazzo.docker.compose
 
+import java.io.Serializable
 import org.gradle.api.Action
 import org.gradle.api.Named
 import org.gradle.api.Task
@@ -9,7 +10,6 @@ import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.process.JavaForkOptions
 import org.gradle.process.ProcessForkOptions
-import java.io.Serializable
 
 abstract class DockerComposeSpec : Named, DockerComposeSettings {
 
