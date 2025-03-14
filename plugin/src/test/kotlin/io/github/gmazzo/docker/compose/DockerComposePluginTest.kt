@@ -1,5 +1,8 @@
 package io.github.gmazzo.docker.compose
 
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 import org.gradle.api.DefaultTask
 import org.gradle.api.plugins.jvm.JvmTestSuite
 import org.gradle.kotlin.dsl.apply
@@ -11,9 +14,6 @@ import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.the
 import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.testing.base.TestingExtension
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class DockerComposePluginTest {
 
@@ -30,7 +30,8 @@ class DockerComposePluginTest {
 
                 it.layout.projectDirectory.file("src/integrationTest/docker-compose.yml").asFile
                     .apply { parentFile.mkdirs() }
-                    .writeText("""
+                    .writeText(
+                        """
                         services:
                             app:
                                 image: nginx
@@ -41,7 +42,8 @@ class DockerComposePluginTest {
                                 ports:
                                   - 127.0.0.1:8090:80
                                   - 127.0.0.1:8091:81
-                    """.trimIndent())
+                        """.trimIndent()
+                    )
             }
     }
 

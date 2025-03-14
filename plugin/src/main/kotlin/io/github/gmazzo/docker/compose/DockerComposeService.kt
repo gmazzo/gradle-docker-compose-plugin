@@ -1,16 +1,16 @@
 package io.github.gmazzo.docker.compose
 
+import java.net.InetAddress
+import java.net.Socket
+import kotlin.concurrent.thread
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import org.gradle.api.logging.Logging
 import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
-import java.net.InetAddress
-import java.net.Socket
-import kotlin.concurrent.thread
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 
 @Suppress("LeakingThis")
 abstract class DockerComposeService : BuildService<DockerComposeService.Params>, AutoCloseable, Runnable {
@@ -181,7 +181,8 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
             logger.info("Ports became available after `{}`", duration)
 
         } else {
-            logger.warn("Ports still not available after `{}`:\n{}",
+            logger.warn(
+                "Ports still not available after `{}`:\n{}",
                 duration,
                 ports.joinToString(separator = "") { (name, host, port) -> " - $name -> $host:$port\n" })
         }
@@ -199,11 +200,15 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
         logger.lifecycle(
             rows.joinToString(
                 prefix = "\nProperties of `$name` Docker service:\n" +
-                        "┌" + "─".repeat(size1 + 2) + "┬" + "─".repeat(size2 + 2) + "┬" + "─".repeat(size3 + 2) + "┐\n" +
-                        "│ " + header1 + " ".repeat(size1 - header1.length) + " │ " + header2 + " ".repeat(size2 - header2.length) + " │ " + header3 + " ".repeat(size3 - header3.length) + " │\n" +
-                        "├" + "─".repeat(size1 + 2) + "┼" + "─".repeat(size2 + 2) + "┼" + "─".repeat(size3 + 2) + "┤\n",
+                    "┌" + "─".repeat(size1 + 2) + "┬" + "─".repeat(size2 + 2) + "┬" + "─".repeat(size3 + 2) + "┐\n" +
+                    "│ " + header1 + " ".repeat(size1 - header1.length) + " │ " + header2 + " ".repeat(size2 - header2.length) + " │ " + header3 + " ".repeat(
+                    size3 - header3.length
+                ) + " │\n" +
+                    "├" + "─".repeat(size1 + 2) + "┼" + "─".repeat(size2 + 2) + "┼" + "─".repeat(size3 + 2) + "┤\n",
                 transform = { (name, value) ->
-                    "│ " + name + " ".repeat(size1 - name.length) + " │ " + name.envVarName + " ".repeat(size2 - name.length) + " │ " + value + " ".repeat(size3 - value.length) + " │\n"
+                    "│ " + name + " ".repeat(size1 - name.length) + " │ " + name.envVarName + " ".repeat(size2 - name.length) + " │ " + value + " ".repeat(
+                        size3 - value.length
+                    ) + " │\n"
                 },
                 separator = "",
                 postfix = "└" + "─".repeat(size1 + 2) + "┴" + "─".repeat(size2 + 2) + "┴" + "─".repeat(size3 + 2) + "┘\n"

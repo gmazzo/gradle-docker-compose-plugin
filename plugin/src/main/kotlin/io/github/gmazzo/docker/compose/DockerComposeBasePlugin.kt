@@ -1,5 +1,7 @@
 package io.github.gmazzo.docker.compose
 
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.services.BuildServiceRegistry
@@ -10,8 +12,6 @@ import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.registerIfAbsent
 import org.gradle.kotlin.dsl.the
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 class DockerComposeBasePlugin @Inject constructor(
     private val sharedServices: BuildServiceRegistry,
@@ -23,7 +23,12 @@ class DockerComposeBasePlugin @Inject constructor(
         val rootExtension: DockerComposeExtension? = if (project != rootProject) rootProject.the() else null
         val extension: DockerComposeExtension =
             if (rootExtension == null) extensions.create("dockerCompose")
-            else extensions.create(DockerComposeExtension::class, "dockerCompose", DockerComposeChildExtension::class, rootExtension)
+            else extensions.create(
+                DockerComposeExtension::class,
+                "dockerCompose",
+                DockerComposeChildExtension::class,
+                rootExtension,
+            )
 
         with(extension) {
             // DockerSettings defaults

@@ -1,9 +1,9 @@
 package io.github.gmazzo.docker.compose.demo
 
+import javax.sql.DataSource
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import javax.sql.DataSource
 
 fun main(args: Array<String>) {
     runApplication<SampleApp>(*args)
@@ -16,13 +16,15 @@ abstract class SampleApp(
 
     override fun afterPropertiesSet() {
         dataSource.connection.use {
-            println("""
-                
+            println(
+                """
+
                 *********************************************
                 Database is ${it.metaData.databaseProductName} ${it.metaData.databaseProductVersion}
                 *********************************************
-                
-            """.trimIndent())
+
+                """.trimIndent()
+            )
         }
     }
 
