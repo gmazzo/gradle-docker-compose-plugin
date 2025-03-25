@@ -10,7 +10,7 @@ fun main(args: Array<String>) {
 }
 
 @SpringBootApplication
-abstract class SampleApp(
+open class SampleApp(
     private val dataSource: DataSource
 ) : InitializingBean {
 
