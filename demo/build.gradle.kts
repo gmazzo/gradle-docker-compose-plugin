@@ -12,20 +12,17 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 application.mainClass = "io.github.gmazzo.docker.compose.demo.SampleAppKt"
 
-testing.suites {
-    withType<JvmTestSuite> {
-        useKotlinTest()
-    }
+testing.suites.withType<JvmTestSuite> {
+    useKotlinTest()
+}
 
-    val integrationTest by registering(JvmTestSuite::class) {
-        // not necessary, just to validate this task works correctly as part of the CI
-        targets.all { testTask { dependsOn(tasks.named("init${name.capitalize()}Containers")) } }
-    }
+testing.suites.register<JvmTestSuite>("integrationTest") {
+    // not necessary, just to validate this task works correctly as part of the CI
+    targets.all { testTask { dependsOn(tasks.named("init${name.replaceFirstChar { it.uppercase() }}Containers")) } }
+}
 
-    tasks.check {
-        dependsOn(integrationTest)
-    }
-
+tasks.check {
+    dependsOn(testing.suites.withType<JvmTestSuite>())
 }
 
 dependencies {
