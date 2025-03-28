@@ -5,8 +5,8 @@ plugins {
     alias(libs.plugins.kotlin.samWithReceiver)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.dokka)
-    alias(libs.plugins.axion.release)
     alias(libs.plugins.mavenPublish)
+    alias(libs.plugins.gitVersion)
     alias(libs.plugins.gradle.pluginPublish)
     alias(libs.plugins.publicationsReport)
     jacoco
@@ -14,7 +14,6 @@ plugins {
 
 group = "io.github.gmazzo.docker.compose"
 description = "Spawns Docker Compose environments for main code and test suites as a Gradle's Shared Build Service"
-version = scmVersion.version
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(11))
 kotlin.compilerOptions.freeCompilerArgs.add("-Xjvm-default=all")
