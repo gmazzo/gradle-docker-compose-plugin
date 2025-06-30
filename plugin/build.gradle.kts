@@ -16,7 +16,7 @@ group = "io.github.gmazzo.docker.compose"
 description = "Spawns Docker Compose environments for main code and test suites as a Gradle's Shared Build Service"
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(11))
-kotlin.compilerOptions.freeCompilerArgs.add("-Xjvm-default=all")
+kotlin.compilerOptions.freeCompilerArgs.add("-Xjvm-default=all-compatibility")
 samWithReceiver.annotation(HasImplicitReceiver::class.java.name)
 
 dependencies {
