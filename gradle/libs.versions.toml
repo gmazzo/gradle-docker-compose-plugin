@@ -11,7 +11,7 @@ spring-starter-web = { module = "org.springframework.boot:spring-boot-starter-we
 spring-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring" }
 
 [plugins]
-dokka = { id = "org.jetbrains.dokka-javadoc", version = "2.0.0" }
+dokka = { id = "org.jetbrains.dokka-javadoc", version = "2.1.0" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-samWithReceiver = { id = "org.jetbrains.kotlin.plugin.sam.with.receiver", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
