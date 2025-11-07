@@ -1,0 +1,262 @@
+public final class io/github/gmazzo/docker/compose/DockerComposeBasePlugin : org/gradle/api/Plugin {
+	public fun <init> (Lorg/gradle/api/services/BuildServiceRegistry;)V
+	public synthetic fun apply (Ljava/lang/Object;)V
+	public fun apply (Lorg/gradle/api/Project;)V
+}
+
+public abstract interface class io/github/gmazzo/docker/compose/DockerComposeCreateSettings {
+	public fun composeFile ([Ljava/lang/Object;)Lorg/gradle/api/file/ConfigurableFileCollection;
+	public abstract fun getComposeFile ()Lorg/gradle/api/file/ConfigurableFileCollection;
+	public abstract fun getOptionsCreate ()Lorg/gradle/api/provider/ListProperty;
+	public abstract fun getProjectName ()Lorg/gradle/api/provider/Property;
+	public abstract fun getWorkingDirectory ()Lorg/gradle/api/file/DirectoryProperty;
+}
+
+public abstract interface class io/github/gmazzo/docker/compose/DockerComposeExtension : io/github/gmazzo/docker/compose/DockerComposeSettings, io/github/gmazzo/docker/compose/DockerSettings {
+	public abstract fun getServices ()Lorg/gradle/api/NamedDomainObjectContainer;
+}
+
+public abstract class io/github/gmazzo/docker/compose/DockerComposeInitTask : org/gradle/api/DefaultTask, io/github/gmazzo/docker/compose/DockerComposeCreateSettings {
+	public fun <init> ()V
+	public abstract fun getComposeFile ()Lorg/gradle/api/file/ConfigurableFileCollection;
+	public abstract fun getDockerComposeService ()Lorg/gradle/api/provider/Property;
+	public abstract fun getDockerService ()Lorg/gradle/api/provider/Property;
+	public abstract fun getOptionsCreate ()Lorg/gradle/api/provider/ListProperty;
+	public abstract fun getProjectName ()Lorg/gradle/api/provider/Property;
+	public abstract fun getStart ()Lorg/gradle/api/provider/Property;
+	public abstract fun getWorkingDirectory ()Lorg/gradle/api/file/DirectoryProperty;
+	public final fun initContainers ()V
+}
+
+public final class io/github/gmazzo/docker/compose/DockerComposePlugin : org/gradle/api/Plugin {
+	public fun <init> ()V
+	public synthetic fun apply (Ljava/lang/Object;)V
+	public fun apply (Lorg/gradle/api/Project;)V
+}
+
+public abstract class io/github/gmazzo/docker/compose/DockerComposeService : java/lang/AutoCloseable, java/lang/Runnable, org/gradle/api/services/BuildService {
+	public fun <init> ()V
+	public fun close ()V
+	public final fun getContainers ()Ljava/util/List;
+	public final fun getContainersAsEnvironmentVariables ()Ljava/util/Map;
+	public final fun getContainersAsSystemProperties ()Ljava/util/Map;
+	public fun run ()V
+}
+
+public abstract interface class io/github/gmazzo/docker/compose/DockerComposeService$Params : io/github/gmazzo/docker/compose/DockerComposeSettings, org/gradle/api/services/BuildServiceParameters {
+	public abstract fun getDockerService ()Lorg/gradle/api/provider/Property;
+	public abstract fun getServiceName ()Lorg/gradle/api/provider/Property;
+}
+
+public abstract interface class io/github/gmazzo/docker/compose/DockerComposeSettings : io/github/gmazzo/docker/compose/DockerComposeCreateSettings {
+	public abstract fun getKeepContainersRunning ()Lorg/gradle/api/provider/Property;
+	public abstract fun getOptionsDown ()Lorg/gradle/api/provider/ListProperty;
+	public abstract fun getOptionsUp ()Lorg/gradle/api/provider/ListProperty;
+	public abstract fun getPrintLogs ()Lorg/gradle/api/provider/Property;
+	public abstract fun getPrintPortMappings ()Lorg/gradle/api/provider/Property;
+	public abstract fun getWaitForTCPPorts ()Lio/github/gmazzo/docker/compose/DockerComposeSettings$WaitForTCPPorts;
+	public fun waitForTCPPorts (Lorg/gradle/api/Action;)V
+}
+
+public abstract interface class io/github/gmazzo/docker/compose/DockerComposeSettings$WaitForTCPPorts {
+	public abstract fun getEnabled ()Lorg/gradle/api/provider/Property;
+	public abstract fun getExclude ()Lorg/gradle/api/provider/SetProperty;
+	public abstract fun getInclude ()Lorg/gradle/api/provider/SetProperty;
+	public abstract fun getTimeout ()Lorg/gradle/api/provider/Property;
+}
+
+public abstract class io/github/gmazzo/docker/compose/DockerComposeSpec : io/github/gmazzo/docker/compose/DockerComposeSettings, org/gradle/api/Named {
+	public fun <init> ()V
+	public final fun bindTo (Lorg/gradle/api/Task;)V
+	public final fun bindTo (Lorg/gradle/api/tasks/TaskProvider;)V
+	public final fun getBuildService ()Lorg/gradle/api/provider/Provider;
+}
+
+public final class io/github/gmazzo/docker/compose/DockerContainer {
+	public static final field Companion Lio/github/gmazzo/docker/compose/DockerContainer$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/time/Instant;Ljava/lang/String;Ljava/util/List;Lio/github/gmazzo/docker/compose/DockerContainer$State;Ljava/lang/String;Lio/github/gmazzo/docker/compose/DockerContainer$NetworkSettings;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/time/Instant;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/List;
+	public final fun component6 ()Lio/github/gmazzo/docker/compose/DockerContainer$State;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun component8 ()Lio/github/gmazzo/docker/compose/DockerContainer$NetworkSettings;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/time/Instant;Ljava/lang/String;Ljava/util/List;Lio/github/gmazzo/docker/compose/DockerContainer$State;Ljava/lang/String;Lio/github/gmazzo/docker/compose/DockerContainer$NetworkSettings;)Lio/github/gmazzo/docker/compose/DockerContainer;
+	public static synthetic fun copy$default (Lio/github/gmazzo/docker/compose/DockerContainer;Ljava/lang/String;Ljava/lang/String;Ljava/time/Instant;Ljava/lang/String;Ljava/util/List;Lio/github/gmazzo/docker/compose/DockerContainer$State;Ljava/lang/String;Lio/github/gmazzo/docker/compose/DockerContainer$NetworkSettings;ILjava/lang/Object;)Lio/github/gmazzo/docker/compose/DockerContainer;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getArgs ()Ljava/util/List;
+	public final fun getCreated ()Ljava/time/Instant;
+	public final fun getId ()Ljava/lang/String;
+	public final fun getImage ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getNetworkSettings ()Lio/github/gmazzo/docker/compose/DockerContainer$NetworkSettings;
+	public final fun getPath ()Ljava/lang/String;
+	public final fun getState ()Lio/github/gmazzo/docker/compose/DockerContainer$State;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class io/github/gmazzo/docker/compose/DockerContainer$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lio/github/gmazzo/docker/compose/DockerContainer$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lio/github/gmazzo/docker/compose/DockerContainer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lio/github/gmazzo/docker/compose/DockerContainer;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+}
+
+public final class io/github/gmazzo/docker/compose/DockerContainer$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class io/github/gmazzo/docker/compose/DockerContainer$NetworkSettings {
+	public static final field Companion Lio/github/gmazzo/docker/compose/DockerContainer$NetworkSettings$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/util/Map;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/util/Map;
+	public final fun copy (Ljava/lang/String;Ljava/util/Map;)Lio/github/gmazzo/docker/compose/DockerContainer$NetworkSettings;
+	public static synthetic fun copy$default (Lio/github/gmazzo/docker/compose/DockerContainer$NetworkSettings;Ljava/lang/String;Ljava/util/Map;ILjava/lang/Object;)Lio/github/gmazzo/docker/compose/DockerContainer$NetworkSettings;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getIpAddress ()Ljava/lang/String;
+	public final fun getPorts ()Ljava/util/Map;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class io/github/gmazzo/docker/compose/DockerContainer$NetworkSettings$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lio/github/gmazzo/docker/compose/DockerContainer$NetworkSettings$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lio/github/gmazzo/docker/compose/DockerContainer$NetworkSettings;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lio/github/gmazzo/docker/compose/DockerContainer$NetworkSettings;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+}
+
+public final class io/github/gmazzo/docker/compose/DockerContainer$NetworkSettings$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class io/github/gmazzo/docker/compose/DockerContainer$Ports {
+	public static final field Companion Lio/github/gmazzo/docker/compose/DockerContainer$Ports$Companion;
+	public fun <init> (Ljava/lang/String;I)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()I
+	public final fun copy (Ljava/lang/String;I)Lio/github/gmazzo/docker/compose/DockerContainer$Ports;
+	public static synthetic fun copy$default (Lio/github/gmazzo/docker/compose/DockerContainer$Ports;Ljava/lang/String;IILjava/lang/Object;)Lio/github/gmazzo/docker/compose/DockerContainer$Ports;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHostIp ()Ljava/lang/String;
+	public final fun getHostPort ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class io/github/gmazzo/docker/compose/DockerContainer$Ports$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lio/github/gmazzo/docker/compose/DockerContainer$Ports$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lio/github/gmazzo/docker/compose/DockerContainer$Ports;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lio/github/gmazzo/docker/compose/DockerContainer$Ports;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+}
+
+public final class io/github/gmazzo/docker/compose/DockerContainer$Ports$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class io/github/gmazzo/docker/compose/DockerContainer$State {
+	public static final field Companion Lio/github/gmazzo/docker/compose/DockerContainer$State$Companion;
+	public fun <init> (Ljava/lang/String;ZZZZZIILjava/lang/String;Ljava/time/Instant;Ljava/time/Instant;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Ljava/time/Instant;
+	public final fun component11 ()Ljava/time/Instant;
+	public final fun component2 ()Z
+	public final fun component3 ()Z
+	public final fun component4 ()Z
+	public final fun component5 ()Z
+	public final fun component6 ()Z
+	public final fun component7 ()I
+	public final fun component8 ()I
+	public final fun component9 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;ZZZZZIILjava/lang/String;Ljava/time/Instant;Ljava/time/Instant;)Lio/github/gmazzo/docker/compose/DockerContainer$State;
+	public static synthetic fun copy$default (Lio/github/gmazzo/docker/compose/DockerContainer$State;Ljava/lang/String;ZZZZZIILjava/lang/String;Ljava/time/Instant;Ljava/time/Instant;ILjava/lang/Object;)Lio/github/gmazzo/docker/compose/DockerContainer$State;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDead ()Z
+	public final fun getError ()Ljava/lang/String;
+	public final fun getExitCode ()I
+	public final fun getFinishedAt ()Ljava/time/Instant;
+	public final fun getOomKilled ()Z
+	public final fun getPaused ()Z
+	public final fun getPid ()I
+	public final fun getRestarting ()Z
+	public final fun getRunning ()Z
+	public final fun getStartedAt ()Ljava/time/Instant;
+	public final fun getStatus ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class io/github/gmazzo/docker/compose/DockerContainer$State$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lio/github/gmazzo/docker/compose/DockerContainer$State$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lio/github/gmazzo/docker/compose/DockerContainer$State;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lio/github/gmazzo/docker/compose/DockerContainer$State;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+}
+
+public final class io/github/gmazzo/docker/compose/DockerContainer$State$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract class io/github/gmazzo/docker/compose/DockerService : java/lang/Runnable, org/gradle/api/services/BuildService {
+	public fun <init> (Lorg/gradle/process/ExecOperations;)V
+	public final fun composeExec (Lio/github/gmazzo/docker/compose/DockerComposeCreateSettings;[Ljava/lang/String;Ljava/io/InputStream;Z)Lio/github/gmazzo/docker/compose/DockerService$ExecResult;
+	public static synthetic fun composeExec$default (Lio/github/gmazzo/docker/compose/DockerService;Lio/github/gmazzo/docker/compose/DockerComposeCreateSettings;[Ljava/lang/String;Ljava/io/InputStream;ZILjava/lang/Object;)Lio/github/gmazzo/docker/compose/DockerService$ExecResult;
+	public final fun exec ([Ljava/lang/String;)Lio/github/gmazzo/docker/compose/DockerService$ExecResult;
+	public final fun exec ([Ljava/lang/String;Ljava/io/File;)Lio/github/gmazzo/docker/compose/DockerService$ExecResult;
+	public final fun exec ([Ljava/lang/String;Ljava/io/File;Ljava/io/InputStream;)Lio/github/gmazzo/docker/compose/DockerService$ExecResult;
+	public final fun exec ([Ljava/lang/String;Ljava/io/File;Ljava/io/InputStream;Z)Lio/github/gmazzo/docker/compose/DockerService$ExecResult;
+	public static synthetic fun exec$default (Lio/github/gmazzo/docker/compose/DockerService;[Ljava/lang/String;Ljava/io/File;Ljava/io/InputStream;ZILjava/lang/Object;)Lio/github/gmazzo/docker/compose/DockerService$ExecResult;
+	public fun run ()V
+}
+
+public final class io/github/gmazzo/docker/compose/DockerService$ExecResult {
+	public fun <init> (Ljava/util/List;ILjava/io/ByteArrayOutputStream;Ljava/io/ByteArrayOutputStream;)V
+	public final fun assertNormalExitValue ()V
+	public final fun getCommand ()Ljava/util/List;
+	public final fun getExitValue ()I
+	public final fun getOutput ()Ljava/lang/String;
+	public final fun getOutputAndError ()Ljava/lang/String;
+}
+
+public abstract interface class io/github/gmazzo/docker/compose/DockerService$Params : io/github/gmazzo/docker/compose/DockerSettings, org/gradle/api/services/BuildServiceParameters {
+}
+
+public abstract interface class io/github/gmazzo/docker/compose/DockerSettings : org/gradle/api/credentials/Credentials {
+	public abstract fun getCommand ()Lorg/gradle/api/provider/Property;
+	public abstract fun getLogin ()Lio/github/gmazzo/docker/compose/DockerSettings$Login;
+	public abstract fun getOptions ()Lorg/gradle/api/provider/ListProperty;
+	public fun login (Lorg/gradle/api/Action;)V
+}
+
+public abstract interface class io/github/gmazzo/docker/compose/DockerSettings$Login {
+	public abstract fun getPassword ()Lorg/gradle/api/provider/Property;
+	public abstract fun getServer ()Lorg/gradle/api/provider/Property;
+	public abstract fun getUsername ()Lorg/gradle/api/provider/Property;
+}
+
+public final class io/github/gmazzo/docker/compose/InstantSerializer : kotlinx/serialization/KSerializer {
+	public static final field INSTANCE Lio/github/gmazzo/docker/compose/InstantSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/time/Instant;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/time/Instant;)V
+}
+

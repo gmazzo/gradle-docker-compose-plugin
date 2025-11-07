@@ -1,5 +1,10 @@
 @file:Suppress("UnstableApiUsage")
 
+@file:OptIn(ExperimentalAbiValidation::class)
+
+import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
+
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.samWithReceiver)
@@ -16,8 +21,12 @@ group = "io.github.gmazzo.docker.compose"
 description = "Spawns Docker Compose environments for main code and test suites as a Gradle's Shared Build Service"
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(11))
-kotlin.compilerOptions.freeCompilerArgs.add("-Xjvm-default=all-compatibility")
 samWithReceiver.annotation(HasImplicitReceiver::class.java.name)
+
+kotlin {
+    abiValidation.enabled = true
+    compilerOptions.jvmDefault = JvmDefaultMode.NO_COMPATIBILITY
+}
 
 dependencies {
     compileOnly(gradleKotlinDsl())
@@ -105,6 +114,14 @@ afterEvaluate {
 
 tasks.withType<PublishToMavenRepository>().configureEach {
     mustRunAfter(tasks.publishPlugins)
+}
+
+tasks.validatePlugins {
+    enableStricterValidation = true
+}
+
+tasks.check {
+    dependsOn(tasks.checkLegacyAbi)
 }
 
 tasks.publishPlugins {

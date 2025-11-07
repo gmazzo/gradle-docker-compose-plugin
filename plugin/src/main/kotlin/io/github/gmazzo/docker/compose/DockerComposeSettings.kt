@@ -6,7 +6,6 @@ import org.gradle.api.provider.Property
 import org.gradle.api.provider.SetProperty
 import org.gradle.api.tasks.Nested
 
-@JvmDefaultWithoutCompatibility
 interface DockerComposeSettings : DockerComposeCreateSettings {
 
     /**

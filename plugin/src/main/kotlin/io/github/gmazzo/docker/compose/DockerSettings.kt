@@ -6,7 +6,6 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Nested
 
-@JvmDefaultWithoutCompatibility
 interface DockerSettings : Credentials {
 
     /**
