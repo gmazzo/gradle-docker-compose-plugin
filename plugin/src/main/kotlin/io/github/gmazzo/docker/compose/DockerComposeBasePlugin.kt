@@ -13,7 +13,7 @@ import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.registerIfAbsent
 import org.gradle.kotlin.dsl.the
 
-class DockerComposeBasePlugin @Inject constructor(
+public class DockerComposeBasePlugin @Inject constructor(
     private val sharedServices: BuildServiceRegistry,
 ) : Plugin<Project> {
 
@@ -112,7 +112,7 @@ class DockerComposeBasePlugin @Inject constructor(
                 maxParallelUsages.convention(1)
             }
 
-            tasks.register<DockerComposeInitTask>("init${if (name == SourceSet.MAIN_SOURCE_SET_NAME) "" else name.capitalized()}Containers") task@{
+            tasks.register<DockerComposeInitTask>("init${if (name == SourceSet.MAIN_SOURCE_SET_NAME) "" else name.replaceFirstChar { it.uppercase() }}Containers") task@{
                 group = "Docker"
                 description = "Creates (but does not start) the containers of '$name' source set"
 

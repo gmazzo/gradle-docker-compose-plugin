@@ -6,7 +6,7 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Nested
 
-interface DockerSettings : Credentials {
+public interface DockerSettings : Credentials {
 
     /**
      * The `docker` command path.
@@ -15,14 +15,14 @@ interface DockerSettings : Credentials {
      *
      * This setting is shared between all [org.gradle.api.Project]s of the build
      */
-    val command: Property<String>
+    public val command: Property<String>
 
     /**
      * Optional options that corresponds to `Global Options` of the `docker` command
      *
      * This setting is shared between all [org.gradle.api.Project]s of the build
      */
-    val options: ListProperty<String>
+    public val options: ListProperty<String>
 
     /**
      * Optional login information to perform `docker login` command before any [DockerComposeService] is created
@@ -30,17 +30,17 @@ interface DockerSettings : Credentials {
      * This setting is shared between all [org.gradle.api.Project]s of the build
      */
     @get:Nested
-    val login: Login
+    public val login: Login
 
-    fun login(action: Action<Login>) = action.execute(login)
+    public fun login(action: Action<Login>): Unit = action.execute(login)
 
-    interface Login {
+    public interface Login {
 
-        val server: Property<String>
+        public val server: Property<String>
 
-        val username: Property<String>
+        public val username: Property<String>
 
-        val password: Property<String>
+        public val password: Property<String>
 
     }
 

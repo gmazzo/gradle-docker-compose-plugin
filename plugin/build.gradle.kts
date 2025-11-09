@@ -26,6 +26,7 @@ samWithReceiver.annotation(HasImplicitReceiver::class.java.name)
 kotlin {
     abiValidation.enabled = true
     compilerOptions.jvmDefault = JvmDefaultMode.NO_COMPATIBILITY
+    explicitApi()
 }
 
 dependencies {
