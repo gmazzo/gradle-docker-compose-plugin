@@ -13,7 +13,7 @@ import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
 
 @Suppress("LeakingThis")
-abstract class DockerComposeService : BuildService<DockerComposeService.Params>, AutoCloseable, Runnable {
+public abstract class DockerComposeService : BuildService<DockerComposeService.Params>, AutoCloseable, Runnable {
 
     private val logger = Logging.getLogger(DockerComposeService::class.java)
 
@@ -37,7 +37,7 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
         }
     }
 
-    val containers: List<DockerContainer>
+    public val containers: List<DockerContainer>
         get() {
             if (!parameters.hasComposeFile) return emptyList()
 
@@ -58,7 +58,7 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
             }
         }
 
-    val containersAsSystemProperties: Map<String, String>
+    public val containersAsSystemProperties: Map<String, String>
         get() = buildMap {
             containers.forEach { container ->
                 val containerName = container.name
@@ -78,7 +78,7 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
             }
         }
 
-    val containersAsEnvironmentVariables: Map<String, String>
+    public val containersAsEnvironmentVariables: Map<String, String>
         get() = containersAsSystemProperties.mapKeys { (key) -> key.envVarName }
 
     override fun run() {
@@ -168,7 +168,7 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
 
                 logger.info("Trying to connect to `{}` -> `{}:{}` (attempt #{})...", name, host, port, attempt)
                 runCatching {
-                    Socket(host, port).use { socket ->
+                    Socket(host, port).use { _ ->
                         // port is open
                         logger.info("Port `{}` -> `{}:{}` is available.", name, host, port)
                         it.remove()
@@ -236,11 +236,11 @@ abstract class DockerComposeService : BuildService<DockerComposeService.Params>,
     private val DockerContainer.host: String
         get() = networkSettings.ipAddress.takeIf { it.isNotBlank() } ?: InetAddress.getByName(null).hostAddress
 
-    interface Params : BuildServiceParameters, DockerComposeSettings {
+    public interface Params : BuildServiceParameters, DockerComposeSettings {
 
-        val serviceName: Property<String>
+        public val serviceName: Property<String>
 
-        val dockerService: Property<DockerService>
+        public val dockerService: Property<DockerService>
 
     }
 

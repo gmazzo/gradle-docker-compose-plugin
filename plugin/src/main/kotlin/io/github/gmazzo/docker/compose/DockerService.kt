@@ -12,7 +12,7 @@ import org.gradle.api.services.BuildServiceParameters
 import org.gradle.process.ExecOperations
 
 @Suppress("LeakingThis")
-abstract class DockerService @Inject constructor(
+public abstract class DockerService @Inject constructor(
     private val execOperations: ExecOperations,
 ) : BuildService<DockerService.Params>, Runnable {
 
@@ -38,7 +38,7 @@ abstract class DockerService @Inject constructor(
     }
 
     @JvmOverloads
-    fun exec(
+    public fun exec(
         vararg command: String,
         workingDirectory: File? = null,
         input: InputStream? = null,
@@ -70,12 +70,12 @@ abstract class DockerService @Inject constructor(
         }
     }
 
-    fun composeExec(
+    public fun composeExec(
         settings: DockerComposeCreateSettings,
         vararg command: String,
         input: InputStream? = null,
         failNonZeroExitValue: Boolean = true,
-    ) = settings.workingDirectory.get().asFile.let { workingDir ->
+    ): DockerService.ExecResult = settings.workingDirectory.get().asFile.let { workingDir ->
         exec(
             "compose",
             "--project-name",
@@ -105,20 +105,20 @@ abstract class DockerService @Inject constructor(
             }
         }
 
-    interface Params : BuildServiceParameters, DockerSettings
+    public interface Params : BuildServiceParameters, DockerSettings
 
-    class ExecResult(
-        val command: List<String>,
-        val exitValue: Int,
+    public class ExecResult(
+        public val command: List<String>,
+        public val exitValue: Int,
         output: ByteArrayOutputStream,
         outputAndError: ByteArrayOutputStream,
     ) {
 
-        val output by lazy { output.toString(StandardCharsets.UTF_8).trim() }
+        public val output: String by lazy { output.toString(StandardCharsets.UTF_8).trim() }
 
-        val outputAndError by lazy { outputAndError.toString(StandardCharsets.UTF_8).trim() }
+        public val outputAndError: String by lazy { outputAndError.toString(StandardCharsets.UTF_8).trim() }
 
-        fun assertNormalExitValue() = check(exitValue == 0) {
+        public fun assertNormalExitValue(): Unit = check(exitValue == 0) {
             command.joinToString(
                 prefix = "Command `",
                 separator = " ",

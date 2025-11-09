@@ -11,7 +11,7 @@ import org.gradle.kotlin.dsl.the
 import org.gradle.kotlin.dsl.withType
 import org.gradle.testing.base.TestingExtension
 
-class DockerComposePlugin : Plugin<Project> {
+public class DockerComposePlugin : Plugin<Project> {
 
     override fun apply(target: Project): Unit = with(target) {
         apply<DockerComposeBasePlugin>()

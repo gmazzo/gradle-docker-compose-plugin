@@ -11,12 +11,12 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.process.JavaForkOptions
 import org.gradle.process.ProcessForkOptions
 
-abstract class DockerComposeSpec : Named, DockerComposeSettings {
+public abstract class DockerComposeSpec : Named, DockerComposeSettings {
 
     /**
      * Returns the service reference to be used on the [Task.usesService] API
      */
-    lateinit var buildService: Provider<DockerComposeService>
+    public lateinit var buildService: Provider<DockerComposeService>
         internal set
 
     /**
@@ -24,7 +24,7 @@ abstract class DockerComposeSpec : Named, DockerComposeSettings {
      *
      * Optionally, if [task] supports [JavaForkOptions] also exposes its [DockerComposeService.containers] as [JavaForkOptions.systemProperties]
      */
-    fun bindTo(task: TaskProvider<*>) =
+    public fun bindTo(task: TaskProvider<*>): Unit =
         task.configure(::bindTo)
 
     /**
@@ -32,7 +32,7 @@ abstract class DockerComposeSpec : Named, DockerComposeSettings {
      *
      * Optionally, if [task] supports [JavaForkOptions] also exposes its [DockerComposeService.containers] as [JavaForkOptions.systemProperties]
      */
-    fun bindTo(task: Task) = with(task) {
+    public fun bindTo(task: Task): Unit = with(task) {
         usesService(buildService)
 
         inputs.files(composeFile)

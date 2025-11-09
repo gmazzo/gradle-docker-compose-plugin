@@ -5,37 +5,37 @@ import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 
-interface DockerComposeCreateSettings {
+public interface DockerComposeCreateSettings {
 
     /**
      * The name of the Docker compose project used to generate container names.
      *
      * Maps to `--project-name` argument
      */
-    val projectName: Property<String>
+    public val projectName: Property<String>
 
     /**
      * The working directory for the `docker-compose` command.
      *
      * Defaults to the project's directory.
      */
-    val workingDirectory: DirectoryProperty
+    public val workingDirectory: DirectoryProperty
 
     /**
      * The source locations for the `docker-compose` file.
      */
-    val composeFile: ConfigurableFileCollection
+    public val composeFile: ConfigurableFileCollection
 
     /**
      * Adds a source location for the `docker-compose` file.
      */
-    fun composeFile(vararg paths: Any) = composeFile.from(paths)
+    public fun composeFile(vararg paths: Any): ConfigurableFileCollection = composeFile.from(paths)
 
     /**
      * Optional options to append to the `docker compose create` command
      *
      * Defaults to `--remove-orphans` to ensure only containers defined in the docker file are kept
      */
-    val optionsCreate: ListProperty<String>
+    public val optionsCreate: ListProperty<String>
 
 }
