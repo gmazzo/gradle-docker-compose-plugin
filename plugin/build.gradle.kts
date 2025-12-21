@@ -20,7 +20,7 @@ plugins {
 group = "io.github.gmazzo.docker.compose"
 description = "Spawns Docker Compose environments for main code and test suites as a Gradle's Shared Build Service"
 
-java.toolchain.languageVersion.set(JavaLanguageVersion.of(11))
+java.toolchain.languageVersion.set(JavaLanguageVersion.of(libs.versions.java.get().toInt()))
 samWithReceiver.annotation(HasImplicitReceiver::class.java.name)
 
 kotlin {

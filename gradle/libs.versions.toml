@@ -1,4 +1,5 @@
 [versions]
+java = "17"
 kotlin = "2.2.21"
 spring = "3.5.7"
 

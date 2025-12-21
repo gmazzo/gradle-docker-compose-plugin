@@ -8,7 +8,7 @@ plugins {
     jacoco
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.toolchain.languageVersion = JavaLanguageVersion.of(libs.versions.java.get().toInt())
 
 application.mainClass = "io.github.gmazzo.docker.compose.demo.SampleAppKt"
 
