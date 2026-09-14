@@ -1,6 +1,6 @@
 [versions]
 java = "17"
-kotlin = "2.4.10"
+kotlin = "2.4.20"
 spring = "4.1.1"
 
 [libraries]
