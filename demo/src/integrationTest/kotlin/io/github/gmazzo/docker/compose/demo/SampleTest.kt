@@ -39,7 +39,7 @@ class SampleTest {
         DriverManager.registerDriver(com.mysql.cj.jdbc.Driver())
         DriverManager.getConnection("jdbc:mysql://$dbHost:$dbPort/", "root", "test").use {
             assertEquals("MySQL", it.metaData.databaseProductName)
-            assertEquals("5.7.43", it.metaData.databaseProductVersion)
+            assertEquals("26.7.0", it.metaData.databaseProductVersion)
         }
     }
 

@@ -10,7 +10,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 @Serializer(forClass = Instant::class)
-public object InstantSerializer : KSerializer<Instant> {
+internal object InstantSerializer : KSerializer<Instant> {
 
     override fun serialize(encoder: Encoder, value: Instant) {
         encoder.encodeString(value.toString())

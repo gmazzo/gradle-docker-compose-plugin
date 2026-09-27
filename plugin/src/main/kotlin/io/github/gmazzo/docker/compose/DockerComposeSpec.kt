@@ -16,8 +16,7 @@ public abstract class DockerComposeSpec : Named, DockerComposeSettings {
     /**
      * Returns the service reference to be used on the [Task.usesService] API
      */
-    public lateinit var buildService: Provider<DockerComposeService>
-        internal set
+    internal lateinit var buildService: Provider<DockerComposeService>
 
     /**
      * Binds [buildService] to the given [task] as a [BuildService] and register the `docker-compose` file as [org.gradle.api.tasks.TaskInputs.files]

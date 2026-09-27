@@ -49,7 +49,7 @@ services:
     ports:
       - 127.0.0.1:8080:80
   db:
-    image: mysql:5.7.43
+    image: mysql:26.7.0
     deploy:
         replicas: 3
     ports:
