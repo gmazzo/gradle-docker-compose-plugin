@@ -19,10 +19,10 @@ import org.gradle.work.DisableCachingByDefault
 public abstract class DockerComposeInitTask : DefaultTask(), DockerComposeCreateSettings {
 
     @get:Internal
-    public abstract val dockerService: Property<DockerService>
+    internal abstract val dockerService: Property<DockerService>
 
     @get:Internal
-    public abstract val dockerComposeService: Property<DockerComposeService>
+    internal abstract val dockerComposeService: Property<DockerComposeService>
 
     @get:Input
     abstract override val projectName: Property<String>
@@ -51,6 +51,8 @@ public abstract class DockerComposeInitTask : DefaultTask(), DockerComposeCreate
 
     @TaskAction
     public fun initContainers() {
+        dockerService.get().start()
+
         if (start.getOrElse(false)) {
             dockerComposeService.get()
 

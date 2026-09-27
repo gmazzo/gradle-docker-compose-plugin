@@ -4,7 +4,6 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     id("io.github.gmazzo.docker.compose")
     application
-    alias(libs.plugins.spring.boot)
     jacoco
 }
 
@@ -19,6 +18,10 @@ testing.suites.withType<JvmTestSuite> {
 testing.suites.register<JvmTestSuite>("integrationTest") {
     // not necessary, just to validate this task works correctly as part of the CI
     targets.all { testTask { dependsOn(tasks.named("init${name.replaceFirstChar { it.uppercase() }}Containers")) } }
+}
+
+tasks.withType<JacocoReport>().configureEach {
+    reports.xml.required = true
 }
 
 tasks.check {

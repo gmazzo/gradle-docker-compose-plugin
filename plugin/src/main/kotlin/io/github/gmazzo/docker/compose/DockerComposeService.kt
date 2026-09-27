@@ -12,7 +12,6 @@ import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
 
-@Suppress("LeakingThis")
 public abstract class DockerComposeService : BuildService<DockerComposeService.Params>, AutoCloseable, Runnable {
 
     private val logger = Logging.getLogger(DockerComposeService::class.java)

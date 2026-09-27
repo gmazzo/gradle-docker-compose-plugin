@@ -2,6 +2,7 @@
 
 @file:OptIn(ExperimentalAbiValidation::class)
 
+import org.gradle.plugin.compatibility.compatibility
 import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
@@ -51,6 +52,12 @@ gradlePlugin {
         displayName = name
         implementationClass = "io.github.gmazzo.docker.compose.DockerComposeBasePlugin"
         description = "Spawns Docker Compose environments for tasks as a Gradle's Shared Build Service"
+        compatibility {
+            features {
+                configurationCache = true
+                isolatedProjects = true
+            }
+        }
         tags.addAll("docker", "docker-compose", "build-service", "shared-build-service")
     }
 

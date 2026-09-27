@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import org.gradle.api.file.FileCollection
 import org.gradle.api.logging.Logging
@@ -11,23 +12,45 @@ import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
 import org.gradle.process.ExecOperations
 
-@Suppress("LeakingThis")
 public abstract class DockerService @Inject constructor(
     private val execOperations: ExecOperations,
-) : BuildService<DockerService.Params>, Runnable {
+) : BuildService<BuildServiceParameters.None>,
+    DockerComposeExtension,
+    AutoCloseable {
 
     private val logger = Logging.getLogger(DockerService::class.java)
 
     init {
-        run()
+        // DockerSettings defaults
+        command.convention("docker").finalizeValueOnRead()
+        options.finalizeValueOnRead()
+        login.server.finalizeValueOnRead()
+        login.username.finalizeValueOnRead()
+        login.password.finalizeValueOnRead()
+
+        // DockerComposeSettings shared defaults
+        optionsCreate.apply { add("--remove-orphans") }.finalizeValueOnRead()
+        optionsUp.apply { add("--wait") }.finalizeValueOnRead()
+        optionsDown.finalizeValueOnRead()
+        keepContainersRunning.convention(false).finalizeValueOnRead()
+        waitForTCPPorts.enabled.convention(true).finalizeValueOnRead()
+        waitForTCPPorts.timeout.convention(TimeUnit.MINUTES.toMillis(1).toInt()).finalizeValueOnRead()
+        printPortMappings.convention(true).finalizeValueOnRead()
+        printLogs.convention(true).finalizeValueOnRead()
     }
 
-    override fun run() {
-        parameters.login.server.orNull?.let { server ->
+    public var started: Boolean = false
+        private set
+
+    public fun start() {
+        if (started) return
+        started = true
+
+        login.server.orNull?.let { server ->
             logger.lifecycle("Performing Docker login to `{}`...", server)
 
-            val user = parameters.login.username.orNull
-            val password = parameters.login.password.orNull
+            val user = login.username.orNull
+            val password = login.password.orNull
 
             exec(
                 "login", server,
@@ -35,6 +58,10 @@ public abstract class DockerService @Inject constructor(
                 input = password?.byteInputStream()
             )
         }
+    }
+
+    override fun close() {
+        started = false
     }
 
     @JvmOverloads
@@ -49,8 +76,8 @@ public abstract class DockerService @Inject constructor(
         val outputAndError = ByteArrayOutputStream()
 
         val result = execOperations.exec {
-            executable = parameters.command.get()
-            args = parameters.options.get() + command
+            executable = this@DockerService.command.get()
+            args = this@DockerService.options.get() + command
             if (input != null) standardInput = input
             if (workingDirectory != null) workingDir = workingDirectory
             standardOutput = TeeOutputStream(output, outputAndError)
@@ -104,8 +131,6 @@ public abstract class DockerService @Inject constructor(
                 error(files.joinToString(e.message.orEmpty()) { "\n - $it" })
             }
         }
-
-    public interface Params : BuildServiceParameters, DockerSettings
 
     public class ExecResult(
         public val command: List<String>,

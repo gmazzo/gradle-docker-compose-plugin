@@ -1,7 +1,7 @@
 public final class io/github/gmazzo/docker/compose/DockerComposeBasePlugin : org/gradle/api/Plugin {
-	public fun <init> (Lorg/gradle/api/services/BuildServiceRegistry;)V
+	public fun <init> (Lorg/gradle/api/invocation/Gradle;)V
 	public synthetic fun apply (Ljava/lang/Object;)V
-	public fun apply (Lorg/gradle/api/Project;)V
+	public fun apply (Lorg/gradle/api/plugins/ExtensionAware;)V
 }
 
 public abstract interface class io/github/gmazzo/docker/compose/DockerComposeCreateSettings {
@@ -19,8 +19,6 @@ public abstract interface class io/github/gmazzo/docker/compose/DockerComposeExt
 public abstract class io/github/gmazzo/docker/compose/DockerComposeInitTask : org/gradle/api/DefaultTask, io/github/gmazzo/docker/compose/DockerComposeCreateSettings {
 	public fun <init> ()V
 	public abstract fun getComposeFile ()Lorg/gradle/api/file/ConfigurableFileCollection;
-	public abstract fun getDockerComposeService ()Lorg/gradle/api/provider/Property;
-	public abstract fun getDockerService ()Lorg/gradle/api/provider/Property;
 	public abstract fun getOptionsCreate ()Lorg/gradle/api/provider/ListProperty;
 	public abstract fun getProjectName ()Lorg/gradle/api/provider/Property;
 	public abstract fun getStart ()Lorg/gradle/api/provider/Property;
@@ -69,7 +67,6 @@ public abstract class io/github/gmazzo/docker/compose/DockerComposeSpec : io/git
 	public fun <init> ()V
 	public final fun bindTo (Lorg/gradle/api/Task;)V
 	public final fun bindTo (Lorg/gradle/api/tasks/TaskProvider;)V
-	public final fun getBuildService ()Lorg/gradle/api/provider/Provider;
 }
 
 public final class io/github/gmazzo/docker/compose/DockerContainer {
@@ -214,8 +211,9 @@ public final class io/github/gmazzo/docker/compose/DockerContainer$State$Compani
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public abstract class io/github/gmazzo/docker/compose/DockerService : java/lang/Runnable, org/gradle/api/services/BuildService {
+public abstract class io/github/gmazzo/docker/compose/DockerService : io/github/gmazzo/docker/compose/DockerComposeExtension, java/lang/AutoCloseable, org/gradle/api/services/BuildService {
 	public fun <init> (Lorg/gradle/process/ExecOperations;)V
+	public fun close ()V
 	public final fun composeExec (Lio/github/gmazzo/docker/compose/DockerComposeCreateSettings;[Ljava/lang/String;Ljava/io/InputStream;Z)Lio/github/gmazzo/docker/compose/DockerService$ExecResult;
 	public static synthetic fun composeExec$default (Lio/github/gmazzo/docker/compose/DockerService;Lio/github/gmazzo/docker/compose/DockerComposeCreateSettings;[Ljava/lang/String;Ljava/io/InputStream;ZILjava/lang/Object;)Lio/github/gmazzo/docker/compose/DockerService$ExecResult;
 	public final fun exec ([Ljava/lang/String;)Lio/github/gmazzo/docker/compose/DockerService$ExecResult;
@@ -223,7 +221,8 @@ public abstract class io/github/gmazzo/docker/compose/DockerService : java/lang/
 	public final fun exec ([Ljava/lang/String;Ljava/io/File;Ljava/io/InputStream;)Lio/github/gmazzo/docker/compose/DockerService$ExecResult;
 	public final fun exec ([Ljava/lang/String;Ljava/io/File;Ljava/io/InputStream;Z)Lio/github/gmazzo/docker/compose/DockerService$ExecResult;
 	public static synthetic fun exec$default (Lio/github/gmazzo/docker/compose/DockerService;[Ljava/lang/String;Ljava/io/File;Ljava/io/InputStream;ZILjava/lang/Object;)Lio/github/gmazzo/docker/compose/DockerService$ExecResult;
-	public fun run ()V
+	public final fun getStarted ()Z
+	public final fun start ()V
 }
 
 public final class io/github/gmazzo/docker/compose/DockerService$ExecResult {
@@ -233,9 +232,6 @@ public final class io/github/gmazzo/docker/compose/DockerService$ExecResult {
 	public final fun getExitValue ()I
 	public final fun getOutput ()Ljava/lang/String;
 	public final fun getOutputAndError ()Ljava/lang/String;
-}
-
-public abstract interface class io/github/gmazzo/docker/compose/DockerService$Params : io/github/gmazzo/docker/compose/DockerSettings, org/gradle/api/services/BuildServiceParameters {
 }
 
 public abstract interface class io/github/gmazzo/docker/compose/DockerSettings : org/gradle/api/credentials/Credentials {
@@ -249,14 +245,5 @@ public abstract interface class io/github/gmazzo/docker/compose/DockerSettings$L
 	public abstract fun getPassword ()Lorg/gradle/api/provider/Property;
 	public abstract fun getServer ()Lorg/gradle/api/provider/Property;
 	public abstract fun getUsername ()Lorg/gradle/api/provider/Property;
-}
-
-public final class io/github/gmazzo/docker/compose/InstantSerializer : kotlinx/serialization/KSerializer {
-	public static final field INSTANCE Lio/github/gmazzo/docker/compose/InstantSerializer;
-	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/time/Instant;
-	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/time/Instant;)V
 }
 

@@ -7,8 +7,8 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.plugins.jvm.JvmTestSuite
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.getByType
-import org.gradle.kotlin.dsl.getValue
 import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.the
@@ -56,8 +56,8 @@ class DockerComposePluginTest {
 
     @Test
     fun `services are bound to Test task`() {
-        val test: DefaultTask by project.tasks
-        val integrationTest: DefaultTask by project.tasks
+        val test = project.tasks.getByName<DefaultTask>("test")
+        val integrationTest = project.tasks.getByName<DefaultTask>("integrationTest")
 
         assertTrue(test.requiredServices.isServiceRequired(extension.services["test"].buildService))
         assertTrue(integrationTest.requiredServices.isServiceRequired(extension.services["integrationTest"].buildService))
@@ -66,8 +66,8 @@ class DockerComposePluginTest {
     @Test
     fun `containers properties are propagated`() {
         val services = project.the<DockerComposeExtension>().services
-        val test: DockerComposeSpec by services
-        val integrationTest: DockerComposeSpec by services
+        val test: DockerComposeSpec = services["test"]
+        val integrationTest: DockerComposeSpec = services["integrationTest"]
 
         try {
             assertEquals(emptyMap(), test.buildService.get().containersAsSystemProperties)
